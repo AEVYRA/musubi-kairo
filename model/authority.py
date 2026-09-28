@@ -253,12 +253,13 @@ class AuthorityModel:
         require(type(moment) is int and moment >= self.now, "CLOCK_BACKWARD")
         self.now = moment
 
-    def _recovery_grace(self):
+    def _recovery_grace(self, outage_start):
         for rule_id, r in list(self.successions.items()):
             if (rule_id in self.accepted_successions
                     and rule_id not in self.fired_successions
                     and rule_id not in self.cancelled_successions
-                    and self.succession_current(r) and not r.recovery_grace_used):
+                    and self.succession_current(r) and not r.recovery_grace_used
+                    and r.deadline > outage_start):
                 self.successions[rule_id] = replace(
                     r, deadline=max(r.deadline, self.now + r.timeout),
                     recovery_grace_used=True)
@@ -269,16 +270,17 @@ class AuthorityModel:
         self.term += 1  # Fence leases even if time cannot yet be established.
         self.clock_ready = self.clock_ready and clock_verified
         if self.clock_ready:
-            self._recovery_grace()
+            self._recovery_grace(self.now)
 
     def recover_clock(self, verified_moment):
         """Trusted recovery evidence, not permission to invent elapsed time."""
         require(not self.clock_ready, "CLOCK_ALREADY_READY")
         require(type(verified_moment) is int and verified_moment >= self.now,
                 "CLOCK_BACKWARD")
+        outage_start = self.now
         self.now = verified_moment
         self.clock_ready = True
-        self._recovery_grace()
+        self._recovery_grace(outage_start)
 
     def restore_boundary(self):
         """Model invalidation after rollback; does not restore bytes from disk."""
@@ -349,9 +351,12 @@ class AuthorityModel:
                 and self.succession_current(r), "SUCCESSION_INELIGIBLE")
         require(self.now >= r.deadline, "NOT_DUE")
         inherited = r.actions  # Never silently enlarge the accepted transfer.
+        not_transferred = self.rights.get((r.owner, r.scope), frozenset()) - inherited
         self.set_rights(r.owner, r.scope, ())
         self.set_rights(r.successor, r.scope, inherited
                         | self.rights.get((r.successor, r.scope), frozenset()))
         self.owners[r.scope] = r.successor
         self.fired_successions.add(rule_id)
-        self.events.append(("succession", rule_id, r.successor, r.scope))
+        self.events.append(("succession", rule_id, r.successor, r.scope,
+                            {"former_owner": r.owner, "transferred": sorted(inherited),
+                             "not_transferred": sorted(not_transferred)}))

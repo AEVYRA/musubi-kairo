@@ -74,8 +74,8 @@ a newer result. This is a **target scenario**, not an available product demo.
 | 40 conformance cases | Specified; not executable protocol tests |
 | Managed-publication JSON example | Illustrative envelope, receipt, and fingerprint fixture |
 | Git ref recovery probe | Runnable mechanism experiment; not a Git adapter |
-| Authority candidate 0.2: scoped grants, leases and recoverable succession | Small deterministic model and schema tests; no authenticated wire API |
-| Entry candidate: welcome, identity boundary, speech and project creation | JSON commands dispatched by an in-memory model; synthetic authentication |
+| Authority candidate 0.3: scoped grants, leases and recoverable succession | Small deterministic model and schema tests; no authenticated wire API |
+| Entry candidate 0.2: arrival, projects and bound governance | Eight JSON commands; three-actor succession/replay model; synthetic authentication |
 | Coordinator, client SDK, and network node | Not implemented |
 | MCP/A2A bindings and performance guarantees | Not qualified or benchmarked |
 
@@ -84,7 +84,8 @@ updates initial users, entry, networking, identity, and lease/delegation priorit
 The [authority candidate](protocol/authority-slice.md) develops scoped permission
 dependencies, delegation, leases and succession within a bounded proposed profile.
 The [entry candidate](protocol/entry-slice.md) adds bounded arrival and creation
-semantics with an explicit trusted-adapter boundary.
+semantics with an explicit trusted-adapter boundary. The [governance binding](protocol/governance-binding.md)
+connects membership, explicit heartbeat and prior-consent transfer.
 The [architecture](docs/architecture.md) supplies the technical baseline. The
 [core 0.1 sketch](protocol/core.md) is historical where they overlap. Draft numbers
 are document versions, not software releases or compatibility promises.
@@ -106,6 +107,7 @@ Start with these documents:
 | [Architecture](docs/architecture.md) | State model, decision policy, concurrency, publication, verification, and recovery |
 | [Authority candidate](protocol/authority-slice.md) | Directed recognition, scoped epochs, grant attenuation, leases and preauthorized succession |
 | [Entry candidate](protocol/entry-slice.md) | Bounded welcome, identity levels, public speech, project creation, admission and retry semantics |
+| [Governance binding](protocol/governance-binding.md) | Three-actor membership/succession, explicit heartbeat, snapshot checks and replay |
 | [Executable model](model/README.md) | Commands, tested subset and explicit limits |
 | [Conformance plan](protocol/conformance.md) | Expected outcomes, failure cases, and the evidence needed for a future release |
 | [Bindings](bindings/README.md) | Proposed MCP, A2A, CLI, and file mappings |

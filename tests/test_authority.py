@@ -271,7 +271,10 @@ class AuthorityTests(unittest.TestCase):
         self.assertFalse(m.live_grant('g'))
         self.assertEqual((m.decisions, m.heads['guide']), ({}, 0))
         self.rejected('SUCCESSION_INELIGIBLE', m.activate_succession, 's')
-        self.assertEqual(m.events, [('succession', 's', 'successor', 'guide')])
+        self.assertEqual(m.events, [('succession', 's', 'successor', 'guide',
+                                    {'former_owner': 'founder',
+                                     'transferred': ['approve', 'publish', 'review'],
+                                     'not_transferred': []})])
 
     def test_heartbeat_extends_and_cannot_resurrect_activated_rule(self):
         m = setup()

@@ -6,7 +6,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-entry-candidate/0.1"
+          "const": "kairo-entry-candidate/0.2"
         },
         "node": {
           "type": "string",
@@ -62,7 +62,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-entry-candidate/0.1"
+          "const": "kairo-entry-candidate/0.2"
         },
         "node": {
           "type": "string",
@@ -157,7 +157,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-entry-candidate/0.1"
+          "const": "kairo-entry-candidate/0.2"
         },
         "node": {
           "type": "string",
@@ -219,6 +219,399 @@
             "expected_membership_rev",
             "subject",
             "actions"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.2"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "plan_succession"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "scope": {
+              "const": "artifact:main"
+            },
+            "rule_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "successor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "timeout": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "expected_control": {
+              "type": "object",
+              "properties": {
+                "goal_rev": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]*$",
+                  "maxLength": 20
+                },
+                "policy_rev": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]*$",
+                  "maxLength": 20
+                },
+                "authority_incarnation": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]*$",
+                  "maxLength": 20
+                },
+                "owner": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+                },
+                "owner_epoch": {
+                  "type": "string",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "maxLength": 20
+                }
+              },
+              "required": [
+                "goal_rev",
+                "policy_rev",
+                "authority_incarnation",
+                "owner",
+                "owner_epoch"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "project",
+            "scope",
+            "rule_id",
+            "successor",
+            "timeout",
+            "expected_control"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.2"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "accept_succession"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "scope": {
+              "const": "artifact:main"
+            },
+            "rule_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "expected_rule": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "project",
+            "scope",
+            "rule_id",
+            "expected_rule"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.2"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "heartbeat"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "scope": {
+              "const": "artifact:main"
+            },
+            "rule_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "expected_rule": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "project",
+            "scope",
+            "rule_id",
+            "expected_rule"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.2"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "cancel_succession"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "scope": {
+              "const": "artifact:main"
+            },
+            "rule_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "expected_rule": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "project",
+            "scope",
+            "rule_id",
+            "expected_rule"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.2"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "activate_succession"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "scope": {
+              "const": "artifact:main"
+            },
+            "rule_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "expected_rule": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "project",
+            "scope",
+            "rule_id",
+            "expected_rule"
           ],
           "additionalProperties": false
         }

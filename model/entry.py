@@ -4,7 +4,7 @@ Trusted adapter inputs register principals and call identify. Opaque session obj
 are simulation handles, not tokens to send over a transport. All calls serialize.
 """
 from copy import deepcopy
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 import hashlib
 import json
 from pathlib import Path
@@ -16,7 +16,7 @@ from model.authority import AuthorityModel, Rejected, require
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = json.loads((ROOT / 'schemas/entry-command.schema.json').read_text())
 VALIDATOR = Draft202012Validator(SCHEMA)
-PROFILE = 'kairo-entry-candidate/0.1'
+PROFILE = 'kairo-entry-candidate/0.2'
 
 
 @dataclass
@@ -31,15 +31,17 @@ class Project:
     title: str
     goal: dict
     authority: AuthorityModel
+    project_id: str = ''
     membership_rev: int = 1
     members: set = field(default_factory=set)
+    rule_revisions: dict = field(default_factory=dict)
 
 
 class EntryModel:
     # Small finite-model bounds, not recommended production quotas.
     LIMITS = {'principals': 8, 'projects': 3, 'projects_per_actor': 2,
               'messages': 8, 'messages_per_actor': 2, 'receipts': 32,
-              'command_bytes': 8192, 'sessions': 16}
+              'command_bytes': 8192, 'sessions': 16, 'rules_per_project': 8}
     SCOPE = 'artifact:main'
 
     def __init__(self):
@@ -108,7 +110,12 @@ class EntryModel:
                     {'name': 'create_project', 'requires':
                      'persistent credential; current admission revision; capacity'},
                     {'name': 'admit', 'requires': 'current scoped project owner'},
-                    {'name': 'enter', 'requires': 'current project member'}],
+                    {'name': 'enter', 'requires': 'current project member'},
+                    {'name': 'plan_succession', 'requires': 'owner; admitted persistent successor'},
+                    {'name': 'accept_succession', 'requires': 'named eligible successor; current rule'},
+                    {'name': 'heartbeat', 'requires': 'rule owner; current accepted rule'},
+                    {'name': 'cancel_succession', 'requires': 'current owner; current rule'},
+                    {'name': 'activate_succession', 'requires': 'persistent member; due accepted rule'}],
                 'creation_enabled': self.creation_enabled,
                 'next': 'Read entry-command schema; identify through the adapter.'}
 
@@ -193,7 +200,7 @@ class EntryModel:
         authority.enroll(p.actor)
         authority.bootstrap_scope(self.SCOPE, p.actor)
         self.projects[project_id] = Project(body['title'], deepcopy(body['goal']),
-                                           authority, members={p.actor})
+                                           authority, project_id=project_id, members={p.actor})
         self.events.append(('create_project', project_id, p.actor))
         return {'project': project_id, 'scope': self.SCOPE, 'goal_rev': '1',
                 'policy_rev': '1', 'membership_rev': '1', 'owner': p.actor}
@@ -227,11 +234,103 @@ class EntryModel:
         # Goal/policy replacement bodies are outside this entry slice.
         require(a.goal == 1 and a.policy == 1 and a.incarnation == 1
                 and a.clock_ready, "CONTROL_UNAVAILABLE")
+        require(a.owners[self.SCOPE] in project.members, "CONTROL_UNAVAILABLE")
         return {'project': project_id, 'title': project.title,
                 'goal': deepcopy(project.goal), 'goal_rev': str(a.goal),
                 'policy_rev': str(a.policy), 'membership_rev': str(project.membership_rev),
                 'scope': self.SCOPE, 'owner': a.owners[self.SCOPE],
                 'direct_actions': sorted(a.rights.get((p.actor, self.SCOPE), ())),
                 'authority_epoch': str(a.epoch(p.actor, self.SCOPE)),
+                'governance_control': self._control(project),
+                'successions': [self._rule_view(project, rid)
+                                for rid in sorted(project.rule_revisions)],
                 'coverage': {'control': 'complete', 'work': 'not_implemented',
                              'obligations': 'not_implemented'}}
+
+    def _control(self, project):
+        a = project.authority
+        owner = a.owners[self.SCOPE]
+        return {'goal_rev': str(a.goal), 'policy_rev': str(a.policy),
+                'authority_incarnation': str(a.incarnation), 'owner': owner,
+                'owner_epoch': str(a.epoch(owner, self.SCOPE))}
+
+    def _eligible_member(self, project, actor):
+        return actor in project.members and any(
+            p.actor == actor and p.enabled and p.persistent
+            for p in self.principals.values())
+
+    def _governance_project(self, p, body):
+        project = self.projects.get(body['project'])
+        require(project is not None and p.actor in project.members, 'NOT_ACCESSIBLE')
+        a = project.authority
+        require(a.goal == 1 and a.policy == 1 and a.incarnation == 1
+                and a.clock_ready and a.owners[self.SCOPE] in project.members,
+                'CONTROL_UNAVAILABLE')
+        require(self._eligible_member(project, p.actor), 'SUBJECT_INELIGIBLE')
+        return project
+
+    def _rule_view(self, project, rule_id):
+        a = project.authority
+        record = asdict(a.successions[rule_id])
+        record['actions'] = sorted(record['actions'])
+        record.update(project=project.project_id, rule_id=rule_id,
+                      binding_revision=project.rule_revisions[rule_id],
+                      accepted=rule_id in a.accepted_successions,
+                      cancelled=rule_id in a.cancelled_successions,
+                      fired=rule_id in a.fired_successions)
+        digest = hashlib.sha256(json.dumps(record, ensure_ascii=False, sort_keys=True,
+                                          separators=(',', ':')).encode()).hexdigest()
+        return {'record': record, 'fingerprint': digest}
+
+    def _bound_rule(self, project, body):
+        rid = body['rule_id']
+        require(rid in project.rule_revisions, 'UNKNOWN_RULE')
+        require(body['expected_rule'] == self._rule_view(project, rid)['fingerprint'],
+                'RULE_CONFLICT')
+        return project.authority.successions[rid]
+
+    def _governance_result(self, project, body, action):
+        rid = body['rule_id']
+        project.rule_revisions[rid] += 1
+        self.events.append((action, body['project'], rid))
+        return {'project': body['project'], 'rule': self._rule_view(project, rid),
+                'governance_control': self._control(project)}
+
+    def _plan_succession(self, p, body):
+        project = self._governance_project(p, body)
+        require(body['expected_control'] == self._control(project), 'CONTROL_CONFLICT')
+        require(self._eligible_member(project, body['successor']), 'SUBJECT_INELIGIBLE')
+        require(len(project.authority.successions) < self.LIMITS['rules_per_project'],
+                'RULE_CAPACITY')
+        project.authority.plan_succession(body['rule_id'], p.actor, body['successor'],
+                                         body['scope'], timeout=body['timeout'])
+        project.rule_revisions[body['rule_id']] = 0
+        return self._governance_result(project, body, 'plan_succession')
+
+    def _accept_succession(self, p, body):
+        project = self._governance_project(p, body)
+        rule = self._bound_rule(project, body)
+        require(self._eligible_member(project, rule.successor), 'SUBJECT_INELIGIBLE')
+        project.authority.accept_succession(body['rule_id'], p.actor)
+        return self._governance_result(project, body, 'accept_succession')
+
+    def _heartbeat(self, p, body):
+        project = self._governance_project(p, body)
+        self._bound_rule(project, body)
+        project.authority.heartbeat(body['rule_id'], p.actor)
+        return self._governance_result(project, body, 'heartbeat')
+
+    def _cancel_succession(self, p, body):
+        project = self._governance_project(p, body)
+        self._bound_rule(project, body)
+        project.authority.cancel_succession(body['rule_id'], p.actor)
+        return self._governance_result(project, body, 'cancel_succession')
+
+    def _activate_succession(self, p, body):
+        project = self._governance_project(p, body)
+        rule = self._bound_rule(project, body)
+        require(self._eligible_member(project, rule.successor), 'SUBJECT_INELIGIBLE')
+        project.authority.activate_succession(body['rule_id'])
+        result = self._governance_result(project, body, 'activate_succession')
+        result['transfer'] = deepcopy(project.authority.events[-1][4])
+        return result

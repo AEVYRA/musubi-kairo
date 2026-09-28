@@ -1,6 +1,8 @@
 # Authority recovery: dispositions of the 0.1 review
 
-2026-09-28 · candidate 0.2, not a production recovery claim.
+2026-09-28 · historical candidate 0.2 at `4885d98`, not a production recovery claim.
+The later [0.3 governance binding](../protocol/governance-binding.md) qualifies grace
+for already-due rules and adds transfer-loss evidence. The table below records 0.2 outcomes.
 
 Anika independently reviewed the authority model introduced by `db635dc` and
 provided five small probes. Sofia reproduced all five results on `6d1e72d`

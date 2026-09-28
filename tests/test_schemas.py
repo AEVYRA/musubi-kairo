@@ -50,8 +50,9 @@ class SchemaTests(unittest.TestCase):
 
     def test_old_profile_and_term_based_succession_are_rejected(self):
         for row in self.examples:
-            self.assertFalse(self.validator.is_valid(
-                {**row, 'profile': 'kairo-authority-candidate/0.1'}))
+            for old in ('0.1', '0.2'):
+                self.assertFalse(self.validator.is_valid(
+                    {**row, 'profile': 'kairo-authority-candidate/' + old}))
         old_rule = copy.deepcopy(self.examples[2])
         old_rule['authority_term'] = old_rule.pop('incarnation')
         self.assertFalse(self.validator.is_valid(old_rule))

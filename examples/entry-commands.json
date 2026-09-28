@@ -1,6 +1,6 @@
 [
   {
-    "profile": "kairo-entry-candidate/0.1",
+    "profile": "kairo-entry-candidate/0.2",
     "node": "node:demo",
     "incarnation": "incarnation:1",
     "operation_id": "op:1",
@@ -11,7 +11,7 @@
     }
   },
   {
-    "profile": "kairo-entry-candidate/0.1",
+    "profile": "kairo-entry-candidate/0.2",
     "node": "node:demo",
     "incarnation": "incarnation:1",
     "operation_id": "op:2",
@@ -31,7 +31,7 @@
     }
   },
   {
-    "profile": "kairo-entry-candidate/0.1",
+    "profile": "kairo-entry-candidate/0.2",
     "node": "node:demo",
     "incarnation": "incarnation:1",
     "operation_id": "op:3",

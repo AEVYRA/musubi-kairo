@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Add entry 0.2 / authority 0.3 governance binding after Anika's recovery review
+  and Tessa's cross-slice review: prior membership and current credential eligibility
+  checked before planning/activation, explicit heartbeat, and five JSON commands.
+- Bind mutations to current control/rule snapshots; share bounded receipts so
+  heartbeat/activation replay cannot create another effect. Retain former-owner
+  membership separately from scoped rights, with a three-actor executable trace.
+- Do not grant recovery grace to rules already due at retained outage-start time;
+  expose transferred/not-transferred scoped rights in activation evidence.
+- Add composition, race, replay, eligibility and quota tests. These remain serialized
+  models with trusted identity/time; no network/storage/scheduler guarantee.
+
 - Revise authority candidate to 0.2 after Anika's independent review: preserve
   accepted succession across retained-state restarts, with one recovery grace
   per owner-heartbeat interval; fence old leases and block uncertain clocks.

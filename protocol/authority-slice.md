@@ -1,14 +1,17 @@
-# Authority candidate 0.2: recognition, scoped grants, and succession
+# Authority candidate 0.3: recognition, scoped grants, and succession
 
 2026-09-28 · **candidate semantics and executable design model**, not a released
-wire profile or coordinator. Sofia's revision following Anika's independent
-review of candidate 0.1. The new patch has not yet received independent review.
-See the [review dispositions](../research/authority-recovery-review.md).
+wire profile or coordinator. Sofia's revision following Anika's recovery review
+and Tessa's cross-slice review. The latest binding patch has not received
+independent review. See the [0.2 recovery history](../research/authority-recovery-review.md)
+and [governance binding](governance-binding.md).
 
-Candidate 0.2 changes epoch invalidation, succession recovery and record shapes.
-It is not a compatible interpretation of existing 0.1 consent records. A future
-migration must explicitly reauthorize the changed policy; no automatic migration
-of persisted rules or wire compatibility is implemented here.
+Candidate 0.3 qualifies recovery grace for rules already due before an outage,
+adds explicit transfer-loss evidence, and composes succession with entry 0.2.
+The earlier 0.2 revision changed epoch invalidation and consent record shapes.
+These policies are not compatible reinterpretations of old consent records.
+A future migration must explicitly reauthorize changed policy; no automatic
+migration of persisted rules or wire compatibility is implemented here.
 
 This slice develops the [agent-first direction](../docs/agent-first-reframe.md).
 It proposes replacing the architecture's broad membership invalidation **only for
@@ -179,11 +182,18 @@ exposes the transition, it does not implement the scheduler.
 ### 6.1 One recovery grace per owner-contact interval
 
 An accepted, current rule survives an ordinary retained-state restart. After time
-is verified, its first restart since creation or the last accepted owner heartbeat
-sets `deadline = max(deadline, now + timeout)` and consumes its recovery grace.
+is verified, its first eligible restart since creation or the last accepted owner
+heartbeat sets `deadline = max(deadline, now + timeout)` and consumes its recovery grace.
 Subsequent restarts cannot extend it again until a new authenticated owner heartbeat
 resets that budget. The grace flag is durable derived state, part of the agreed
-0.2 recovery policy; it must survive a restart with the rest of the rule.
+0.3 recovery policy; it must survive a restart with the rest of the rule.
+
+Eligibility additionally requires `deadline > outage_start`: a rule already due
+before the outage receives no new grace. For a verified zero-downtime restart,
+`outage_start = now`; for clock recovery it is the retained model time before
+adopting the verified moment. Uncertain time freezes that model value. A real
+adapter must specify what its outage evidence establishes; this model does not
+prove that a persisted clock value equals the real outage start.
 
 This grants one interval in which the owner can return after an outage without
 letting repeated restarts alone postpone succession indefinitely. After the grace
@@ -210,7 +220,12 @@ old owner are still invalidated as applicable. Other scopes stay intact.
 
 Goal/policy changes, removal of relevant scoped rights, owner replacement or
 restore invalidate a rule. Pure additions do not widen its frozen transfer set.
-Activation records an event but approves no proposal, publishes no artifact, and
+Activation records the former owner, the frozen `transferred` rights and
+`not_transferred` (the former owner's current rights minus that frozen set).
+It does not claim that the omitted capabilities vanished from every project actor.
+The [entry governance binding](governance-binding.md) additionally checks membership
+and live principal eligibility, and wraps these transitions in JSON receipts.
+Activation approves no proposal, publishes no artifact, and
 removes no historical dissent. Both the accepted rule and its derived deadline /
 grace-used flag require durable storage in a real implementation; Python calls
 and in-memory fields provide no crash-durability proof.

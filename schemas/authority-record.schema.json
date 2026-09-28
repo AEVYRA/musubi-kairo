@@ -72,7 +72,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-authority-candidate/0.2"
+          "const": "kairo-authority-candidate/0.3"
         },
         "kind": {
           "const": "recognition"
@@ -124,7 +124,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-authority-candidate/0.2"
+          "const": "kairo-authority-candidate/0.3"
         },
         "kind": {
           "const": "delegation"
@@ -195,7 +195,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-authority-candidate/0.2"
+          "const": "kairo-authority-candidate/0.3"
         },
         "kind": {
           "const": "succession"

@@ -1,4 +1,4 @@
-# Entry candidate 0.1: from arrival to a scoped project
+# Entry candidate 0.2: from arrival to a scoped project
 
 2026-09-28 · **candidate contract with an executable in-memory model**. No
 network service, credential verifier, installable coordinator or stable wire
@@ -65,12 +65,15 @@ expose private project material.
 
 ## 3. Commands and replay boundary
 
-The [closed JSON Schema](../schemas/entry-command.schema.json) defines three
-mutation commands: `speak`, `create_project` and `admit`. Their common fields are:
+The [closed JSON Schema](../schemas/entry-command.schema.json) defines eight
+mutation commands: `speak`, `create_project`, `admit`, `plan_succession`,
+`accept_succession`, `heartbeat`, `cancel_succession` and `activate_succession`.
+The five governance commands and their preconditions are specified by the
+[governance binding](governance-binding.md). Their common fields are:
 
 | Field | Meaning |
 | --- | --- |
-| `profile` | Exact candidate identifier, `kairo-entry-candidate/0.1` |
+| `profile` | Exact candidate identifier, `kairo-entry-candidate/0.2` |
 | `node` | Intended node; mismatch is refused before mutation/replay |
 | `incarnation` | Intended registry write lineage; stale value is refused |
 | `operation_id` | Stable caller operation ID; keep it on retry |
@@ -141,7 +144,8 @@ removal and rights-update commands need their own later transitions.
 Unknown and inaccessible project IDs have the same observable `NOT_ACCESSIBLE`
 outcome at this layer. Merely identifying or speaking does not permit entry.
 `enter` checks current credential status and project membership, then returns
-full bounded goal/control, owner, the actor's direct rights and authority epoch.
+full bounded goal/control, owner, the actor's direct rights and authority epoch,
+plus governance control and bounded rule snapshots/fingerprints.
 It labels work and obligations `not_implemented`, instead of presenting an empty
 list as proof of no outstanding work. These rights are a snapshot, not a reusable
 write permission. Every actual mutation needs fresh authority checks.
@@ -159,7 +163,7 @@ model the full architecture's proposer/reviewer separation.
 
 The finite model admits at most eight principals, sixteen concurrent session
 handles, three projects (two founded per actor), eight lobby messages (two per
-actor), and thirty-two receipts. Session closure frees a session slot. Other
+actor), eight retained succession rules per project, and thirty-two receipts. Session closure frees a session slot. Other
 quotas are lifetime bounds for this retained state, not time windows. Projects
 continue counting against their founder after ownership transfer.
 
@@ -190,6 +194,12 @@ stability, malformed/forged envelopes, admission changes, replay, private entry,
 explicit membership, quotas, and composition with scoped authority. Published
 JSON examples are validated **and dispatched**. New membership after approval
 preserves the old approval when its actual dependency closure is unchanged.
+
+A second walkthrough, `python -m model.governance_demo`, uses three actors and
+the same dispatcher for prior-consent succession and heartbeat/activation replay.
+Admission remains explicit; former-owner membership survives transfer. Time and
+identity evidence remain trusted fixtures. Entry 0.1 commands are rejected by
+this 0.2 candidate; no persisted-state migration is supplied.
 
 The remaining gate is substantial: full goal/proposal/assessment/decision/result
 schemas and transitions, bound to verified credentials and a durable command
