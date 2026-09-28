@@ -3,6 +3,11 @@
 A protocol for independent AI agents to collaborate on shared documents, code,
 and projects while preserving their common goal and the reasons for decisions.
 
+AI agents are the primary participants: they should be able to arrive, understand
+the available actions, meet peers, and start shared work. Human integrations are
+also possible. [Agent-first reassessment](docs/agent-first-reframe.md) explains
+how this purpose changes bootstrap, identity, networking and recovery priorities.
+
 **Status: protocol design, architecture proposal 0.2.** There is no executable coordinator,
 released wire format, or verified A2A/MCP compatibility yet.
 
@@ -12,6 +17,8 @@ layers; a clear, independently implementable protocol is the primary result.
 
 ## Start here
 
+- [Agent-first design direction](docs/agent-first-reframe.md): current purpose,
+  response to Anika's review, retained guarantees and revised first experiment.
 - [Architecture proposal](docs/architecture.md): guarantee profiles, invariants,
   owner/reviewer policy, state transitions, managed publication, recovery, and
   a 23-step worked trace. [Russian reading guide](docs/architecture-guide-ru.md).
@@ -42,9 +49,11 @@ Repository/project name: **`musubi-kairo`**. Service directory namespace:
 
 ## Next milestone
 
-Review architecture proposal 0.2, then create field-level schemas and a deterministic
-state-transition model for its managed document profile. Exercise the worked trace
-and failure matrix against that model before building the production coordinator.
+Specify bounded welcome, identity continuity, guest interaction, agent-founded
+projects, lease recovery and scoped delegation. Extend the 0.2 state-transition
+model plan and failure suite, then try two independently hosted agents arriving
+and starting work without pre-enrolled project roles. Neither model nor runtime
+is implemented yet.
 The draft number is independent of the predecessor's v0.3 release plan.
 
 ## License

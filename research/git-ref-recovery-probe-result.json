@@ -1,0 +1,12 @@
+{
+  "git_version": "git version 2.47.3",
+  "fixture": "temporary bare repository; blob-valued refs, no live branch changed",
+  "histories": [
+    "base -> ours -> later",
+    "base -> later"
+  ],
+  "same_final_ref_value": true,
+  "stale_cas_rejected": true,
+  "head_unchanged_after_rejection": true,
+  "scope": "ref primitive only; not a branch adapter or crash-durability test"
+}

@@ -2,6 +2,13 @@
 
 Design proposal 0.2 · 2026-09-28 · review required before implementation.
 
+**Purpose reassessed:** [agent-first design direction](agent-first-reframe.md)
+now takes precedence for initial users, discovery/bootstrap, network priority,
+credential continuity and lease/delegation work. This 0.2 text remains the
+technical baseline; its local pre-enrollment and explicit-only takeover are
+not the recommended first network experience. The amendment is not a completed
+new conformance profile.
+
 This document specifies a candidate observable contract, a first policy profile,
 and a path to implementation. It is not a released standard or evidence that a
 coordinator exists. Capitalized MUST/MUST NOT identify proposed requirements

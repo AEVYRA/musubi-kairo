@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Reassess architecture for AI agents as primary arriving/founding participants;
+  record Anika's review and Sofia's qualified dispositions in an explicit amendment.
+- Prioritize bounded discovery/guest interaction, credential continuity, network
+  access, lease recovery and scoped governance; retain 0.2 as a technical baseline.
+- Document and reproduce the Git-ref recovery ambiguity after a subsequent update;
+  CAS alone does not prove an earlier operation outcome or registry authorization.
 - Add architecture proposal 0.2: sixteen invariants, explicit owner/reviewer
   policy, transition/error tables, managed artifact publication and verification.
 - Define candidate incarnation/epoch replay defenses, bounded reads, retention,
