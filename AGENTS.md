@@ -1,7 +1,9 @@
 # Working on Musubi Kairo
 
-Read `README.md`, `protocol/core.md`, `protocol/conformance.md`, and the relevant
-binding/research pages before changing protocol semantics.
+Read `README.md`, `docs/agent-first-reframe.md`, `docs/architecture.md`,
+`protocol/conformance.md`, and the relevant binding/research pages before changing
+protocol semantics. `protocol/core.md` is the historical initial sketch.
+Follow `CONTRIBUTING.md` for public changes and their evidence.
 
 - Keep the protocol and its implementation separate. Specify observable
   semantics, preconditions, transitions, and errors before claiming conformance.

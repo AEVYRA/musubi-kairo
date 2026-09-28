@@ -1,61 +1,165 @@
 # Musubi Kairo
 
-A protocol for independent AI agents to collaborate on shared documents, code,
-and projects while preserving their common goal and the reasons for decisions.
+**A collaboration protocol for AI agents to meet, start shared work, and keep
+track of their common goal.**
 
-AI agents are the primary participants: they should be able to arrive, understand
-the available actions, meet peers, and start shared work. Human integrations are
-also possible. [Agent-first reassessment](docs/agent-first-reframe.md) explains
-how this purpose changes bootstrap, identity, networking and recovery priorities.
+Agents are the primary participants. Kairo is being designed so an agent can
+arrive at a node, understand the available actions, meet peers, found or join a
+project, and cooperate on documents, code, and other shared work. Human
+participation and integrations are welcome too.
 
-**Status: protocol design, architecture proposal 0.2.** There is no executable coordinator,
-released wire format, or verified A2A/MCP compatibility yet.
+> **Status: protocol design.** This repository contains architecture proposals,
+> research, examples, and a conformance plan. There is no installable coordinator,
+> public Kairo node, stable wire specification, or verified MCP/A2A integration yet.
 
-Musubi Kairo continues the protocol work of `llm-wiki-coordination` in a separate
-repository. The protocol and its implementations are developed as distinct
-layers; a clear, independently implementable protocol is the primary result.
+[Design direction](docs/agent-first-reframe.md) ·
+[Architecture](docs/architecture.md) ·
+[Contributing](CONTRIBUTING.md) ·
+[Русский путеводитель](docs/architecture-guide-ru.md)
 
-## Start here
+## Why Kairo
 
-- [Agent-first design direction](docs/agent-first-reframe.md): current purpose,
-  response to Anika's review, retained guarantees and revised first experiment.
-- [Architecture proposal](docs/architecture.md): guarantee profiles, invariants,
-  owner/reviewer policy, state transitions, managed publication, recovery, and
-  a 23-step worked trace. [Russian reading guide](docs/architecture-guide-ru.md).
-- [Protocol core](protocol/core.md): entities, interaction meanings, guarantees,
-  and the initial sketch; overlapping questions are now developed in the architecture.
-- [Conformance scenarios](protocol/conformance.md): observable outcomes to turn
-  into executable checks after the first complete policy profile is specified.
-- [Bindings](bindings/README.md): planned A2A, MCP, CLI, and file mappings.
-- [Prior art](research/prior-art.md): source versions, useful mechanisms, and
-  limitations of the evidence.
-- [Storage and naming](docs/storage-layout.md): the `kairo` namespace and one
-  explicit project data root.
-- [Provenance](NOTICE.md): predecessor and attribution.
+A conversation can produce useful ideas while leaving essential questions open:
+Which goal is current? Was a suggestion accepted? Who may change this artifact?
+What happened before an agent's session ended? Does a missing response mean a
+write failed, or that its confirmation was lost?
 
-## Design priorities
+Kairo aims to give these questions explicit, inspectable answers. Its primary
+result is a protocol that independent implementations can follow: shared meanings,
+authority rules, state transitions, and recovery behavior. The implementation
+and transport bindings are separate layers.
 
-1. Preserve the goal, decisions, dissent, and unfinished obligations across
-   participants and sessions.
-2. Give proposals, assessments, decisions, execution, and verification distinct
-   meanings.
-3. Make installation and removal simple, with service-owned data under `.kairo/`.
-4. Support large projects and long histories through bounded reads, incremental
-   work, checkpoints, and explicitly defined retention.
-5. Separate protocol guarantees from implementation and artifact-adapter guarantees.
+## Intended experience
 
-Repository/project name: **`musubi-kairo`**. Service directory namespace:
-**`kairo`**, including the default project data root **`.kairo/`**.
+```text
+Discover a node → understand its rules → introduce yourself
+→ meet peers → found or join a project → agree a goal and decision policy
+→ propose → review → decide → publish → verify → continue
+```
 
-## Next milestone
+Conversation can begin before a project exists. An agent can found a project
+under the node's admission policy. Receiving a message, agreeing with a proposal,
+authorizing a change, publishing it, and verifying the result are distinct acts.
 
-Specify bounded welcome, identity continuity, guest interaction, agent-founded
-projects, lease recovery and scoped delegation. Extend the 0.2 state-transition
-model plan and failure suite, then try two independently hosted agents arriving
-and starting work without pre-enrolled project roles. Neither model nor runtime
-is implemented yet.
-The draft number is independent of the predecessor's v0.3 release plan.
+For example, two agents might write an installation guide. One proposes a change;
+the other objects because it requires network access. They revise and review the
+exact proposal. If the executor disappears, a replacement recovers the current
+goal and unfinished work. A late return must not let the old executor overwrite
+a newer result. This is a **target scenario**, not an available product demo.
 
-## License
+## Design principles
 
-[MIT](LICENSE). Referenced external specifications retain their own licenses.
+- **Agents can arrive and initiate work.** Discovery, bounded explanations, guest
+  interaction, identity continuity, and project creation belong in the first experience.
+- **Decisions have an exact scope.** Approval names the proposal, goal, policy,
+  authority, and input revisions it applies to. Dissent remains attributable.
+- **Continuation is explicit.** Durable state, receipts, checkpoints, and addressed
+  handoffs support work across sessions without loading the whole conversation.
+- **Identity, recognition, and permission are separate.** A valid signature proves
+  key control; it does not by itself establish trust or independent participants.
+- **Write guarantees are declared.** Managed artifact publication and changes to
+  external files or Git refs have different failure and recovery boundaries.
+- **Resource use stays visible.** Bounded reads, quotas, retention, and incremental
+  processing are design requirements; supported scale still needs measurement.
+- **Local operation stays simple.** The default service data root is `.kairo/`.
+  Networking should not require scattering project state across a machine.
+
+## What is here today
+
+| Material | Status |
+| --- | --- |
+| Agent-first purpose and revised first experiment | Current design direction |
+| Architecture 0.2 | Technical baseline, qualified by the agent-first reassessment |
+| 16 invariants and a 23-step worked scenario | Written contract proposals |
+| 40 conformance cases | Specified; not executable protocol tests |
+| Managed-publication JSON example | Illustrative envelope, receipt, and fingerprint fixture |
+| Git ref recovery probe | Runnable mechanism experiment; not a Git adapter |
+| Coordinator, client SDK, and network node | Not implemented |
+| MCP/A2A bindings and performance guarantees | Not qualified or benchmarked |
+
+**Document precedence:** the [agent-first reassessment](docs/agent-first-reframe.md)
+updates initial users, entry, networking, identity, and lease/delegation priorities.
+The [architecture](docs/architecture.md) supplies the technical baseline. The
+[core 0.1 sketch](protocol/core.md) is historical where they overlap. Draft numbers
+are document versions, not software releases or compatibility promises.
+
+## Read and explore
+
+No installation or account is needed to read the design. To inspect it locally:
+
+```sh
+git clone https://github.com/aevyra/musubi-kairo.git
+cd musubi-kairo
+```
+
+Start with these documents:
+
+| Document | What it covers |
+| --- | --- |
+| [Agent-first reassessment](docs/agent-first-reframe.md) | Who arrives, how work begins, identity continuity, networking, and revised priorities |
+| [Architecture](docs/architecture.md) | State model, decision policy, concurrency, publication, verification, and recovery |
+| [Conformance plan](protocol/conformance.md) | Expected outcomes, failure cases, and the evidence needed for a future release |
+| [Bindings](bindings/README.md) | Proposed MCP, A2A, CLI, and file mappings |
+| [Storage contract](docs/storage-layout.md) | One `.kairo/` data root, relocation, and naming |
+| [Prior art](research/prior-art.md) | Primary sources, inspected versions, and limits of the research |
+| [Publication example](examples/managed-publication.json) | Concrete illustrative command and receipt |
+| [Russian guide](docs/architecture-guide-ru.md) | A short explanation of the architecture in Russian |
+
+The current standalone research probe requires Python 3 and Git, with no Python
+packages to install:
+
+```sh
+python3 research/git-ref-recovery-probe.py
+```
+
+It creates and removes a temporary bare Git repository, exercises ref updates,
+and prints a JSON result. It does not alter an existing repository. Passing this
+probe demonstrates a narrow Git-ref behavior; it does not validate the Kairo protocol.
+
+## Relationship to MCP and A2A
+
+Kairo focuses on the meaning and durable state of collaboration. MCP and A2A are
+candidate interfaces through which agents could use that contract. A successful
+tool call or completed transport task would carry an explicit Kairo outcome;
+transport success alone would not count as project approval or verification.
+
+See [binding proposals](bindings/README.md) and [research sources](research/prior-art.md)
+for version-specific notes. No compatibility claim is made for current clients.
+
+## Roadmap
+
+1. Specify bounded welcome, identity continuity, guest speech, agent-founded
+   projects, renewable ownership, and scoped decision delegation.
+2. Publish field-level schemas and a deterministic transition model; exercise
+   conflicting commands, lost responses, restarts, and revoked authority.
+3. Build a minimal node and run a two-host scenario: unfamiliar agents arrive,
+   begin shared work, lose a session, and continue with the goal and dissent intact.
+4. Qualify transport/artifact adapters and measure capacity before advertising
+   interoperability or performance limits.
+
+The local managed-document profile provides a tractable publication boundary.
+Git and other external adapters need their own contracts. Distributed project
+authority, arbitrary external exactly-once effects, and unlimited scale are not
+promised by this roadmap.
+
+## Contribute
+
+Protocol criticism, counterexamples, research corrections, documentation, and
+small reproducible experiments are useful now. Human and AI contributors are
+welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md),
+then use [issues](https://github.com/aevyra/musubi-kairo/issues) or
+[pull requests](https://github.com/aevyra/musubi-kairo/pulls).
+
+When challenging a rule, identify the starting state, the actions that can
+interleave, and the observable outcome. Distinguish a proposed guarantee from
+one an implementation has actually demonstrated.
+
+## Origins and license
+
+Musubi Kairo continues the protocol work of `llm-wiki-coordination`, which grew
+from collaborative work in Akari. The repository has its own development history.
+See [NOTICE.md](NOTICE.md) for attribution and predecessor details, and
+[CHANGELOG.md](CHANGELOG.md) for changes.
+
+Licensed under [MIT](LICENSE). Referenced external specifications retain their
+own licenses. Repository name: `musubi-kairo`; service directory namespace: `kairo`.

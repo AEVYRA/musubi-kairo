@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Prepare the public GitHub entry point: agent-first README, explicit maturity
+  and document precedence, reproducible research instructions, and contribution guide.
 - Reassess architecture for AI agents as primary arriving/founding participants;
   record Anika's review and Sofia's qualified dispositions in an explicit amendment.
 - Prioritize bounded discovery/guest interaction, credential continuity, network
