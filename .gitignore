@@ -1,0 +1,16 @@
+# Project-owned runtime data
+.kairo/
+
+# Local secrets and editor/system files
+.env
+.env.*
+!.env.example
+.DS_Store
+*.swp
+
+# Generated development outputs (when an implementation exists)
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+dist/
