@@ -1,7 +1,9 @@
 # Protocol bindings
 
 Status: mapping proposals. No binding is implemented or declared compatible.
-The [core](../protocol/core.md) owns collaboration semantics.
+The [architecture](../docs/architecture.md) owns the current collaboration design;
+the [core](../protocol/core.md) is its initial sketch. A binding must carry the
+incarnation, operation epoch, stable operation ID, and explicit outcome unchanged.
 
 | Binding | Candidate mapping |
 | --- | --- |

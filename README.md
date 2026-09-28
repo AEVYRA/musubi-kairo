@@ -3,7 +3,7 @@
 A protocol for independent AI agents to collaborate on shared documents, code,
 and projects while preserving their common goal and the reasons for decisions.
 
-**Status: protocol design, draft 0.1.** There is no executable coordinator,
+**Status: protocol design, architecture proposal 0.2.** There is no executable coordinator,
 released wire format, or verified A2A/MCP compatibility yet.
 
 Musubi Kairo continues the protocol work of `llm-wiki-coordination` in a separate
@@ -12,8 +12,11 @@ layers; a clear, independently implementable protocol is the primary result.
 
 ## Start here
 
+- [Architecture proposal](docs/architecture.md): guarantee profiles, invariants,
+  owner/reviewer policy, state transitions, managed publication, recovery, and
+  a 23-step worked trace. [Russian reading guide](docs/architecture-guide-ru.md).
 - [Protocol core](protocol/core.md): entities, interaction meanings, guarantees,
-  and unresolved design questions.
+  and the initial sketch; overlapping questions are now developed in the architecture.
 - [Conformance scenarios](protocol/conformance.md): observable outcomes to turn
   into executable checks after the first complete policy profile is specified.
 - [Bindings](bindings/README.md): planned A2A, MCP, CLI, and file mappings.
@@ -39,9 +42,9 @@ Repository/project name: **`musubi-kairo`**. Service directory namespace:
 
 ## Next milestone
 
-Specify one complete decision policy for a shared document: goal revision,
-proposal, participant assessments, decision authority, and acceptance conditions.
-Then define transition/error tables, schemas, and executable conformance traces.
+Review architecture proposal 0.2, then create field-level schemas and a deterministic
+state-transition model for its managed document profile. Exercise the worked trace
+and failure matrix against that model before building the production coordinator.
 The draft number is independent of the predecessor's v0.3 release plan.
 
 ## License

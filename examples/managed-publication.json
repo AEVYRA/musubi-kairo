@@ -1,0 +1,83 @@
+{
+  "status": "illustrative draft, not a released wire schema or executed trace",
+  "assumptions": [
+    "Actor C authenticated and authorized; actor epoch 1 open.",
+    "Current tuple matches; work and proposal heads match expected.",
+    "Decision D3 eligible; attempt 3 executing under C with generation 1.",
+    "Candidate object durable and pinned; revision 1 is the managed artifact head."
+  ],
+  "candidate_content_utf8": "Offline installation requires no network connection.\n",
+  "command": {
+    "protocol_version": "draft-0.2",
+    "profile": {
+      "semantics": "semantic-0.2",
+      "registry": "managed-0.2",
+      "artifact": "managed-artifact-0.2",
+      "policy": "owner-review-0.2"
+    },
+    "project_id": "project-demo",
+    "incarnation_id": "incarnation-demo-1",
+    "actor_id": "actor-c",
+    "run_id": "run-c-1",
+    "operation_epoch": "1",
+    "operation_id": "op-publish-1",
+    "kind": "artifact.publish",
+    "control": {
+      "goal_rev": "goal-2",
+      "policy_rev": "policy-1",
+      "membership_rev": "membership-1"
+    },
+    "expected": {
+      "artifact-guide": "revision-1",
+      "proposal-q3": "proposal-revision-1",
+      "work-2": "work-revision-1"
+    },
+    "parents": [
+      "event-approved-d3"
+    ],
+    "payload": {
+      "work_id": "work-2",
+      "attempt_id": "attempt-3",
+      "generation": "1",
+      "decision_id": "decision-3",
+      "artifact_id": "artifact-guide",
+      "read_set": [
+        {
+          "artifact_id": "artifact-guide",
+          "revision_id": "revision-1"
+        }
+      ],
+      "output": {
+        "object_ref": "object-offline-guide",
+        "digest": "sha256:5bcb3698f77a757bd457ba8339ae91713a9289b559e168632033cf43bae04751",
+        "media_type": "text/plain; charset=utf-8"
+      }
+    }
+  },
+  "canonical_command_utf8": "{\"actor_id\":\"actor-c\",\"control\":{\"goal_rev\":\"goal-2\",\"membership_rev\":\"membership-1\",\"policy_rev\":\"policy-1\"},\"expected\":{\"artifact-guide\":\"revision-1\",\"proposal-q3\":\"proposal-revision-1\",\"work-2\":\"work-revision-1\"},\"incarnation_id\":\"incarnation-demo-1\",\"kind\":\"artifact.publish\",\"operation_epoch\":\"1\",\"operation_id\":\"op-publish-1\",\"parents\":[\"event-approved-d3\"],\"payload\":{\"artifact_id\":\"artifact-guide\",\"attempt_id\":\"attempt-3\",\"decision_id\":\"decision-3\",\"generation\":\"1\",\"output\":{\"digest\":\"sha256:5bcb3698f77a757bd457ba8339ae91713a9289b559e168632033cf43bae04751\",\"media_type\":\"text/plain; charset=utf-8\",\"object_ref\":\"object-offline-guide\"},\"read_set\":[{\"artifact_id\":\"artifact-guide\",\"revision_id\":\"revision-1\"}],\"work_id\":\"work-2\"},\"profile\":{\"artifact\":\"managed-artifact-0.2\",\"policy\":\"owner-review-0.2\",\"registry\":\"managed-0.2\",\"semantics\":\"semantic-0.2\"},\"project_id\":\"project-demo\",\"protocol_version\":\"draft-0.2\",\"run_id\":\"run-c-1\"}",
+  "expected_fingerprint": "sha256:9de419253c4c171d64d27466d57bd4a594d2ba9279f4c5ba9a1315f5532b08a7",
+  "illustrative_receipt": {
+    "receipt_id": "receipt-publish-1",
+    "identity": {
+      "project_id": "project-demo",
+      "incarnation_id": "incarnation-demo-1",
+      "actor_id": "actor-c",
+      "operation_epoch": "1",
+      "operation_id": "op-publish-1"
+    },
+    "fingerprint": "sha256:9de419253c4c171d64d27466d57bd4a594d2ba9279f4c5ba9a1315f5532b08a7",
+    "outcome": "accepted",
+    "domain_outcome": "artifact_published",
+    "committed": true,
+    "persisted_receipt": true,
+    "commit_sequence": "42",
+    "event_ids": [
+      "event-publish-1"
+    ],
+    "affected_revisions": {
+      "artifact-guide": "revision-2"
+    },
+    "attempt_state": "applied",
+    "decision_status": "consumed"
+  }
+}

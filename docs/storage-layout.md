@@ -1,6 +1,8 @@
 # Storage and naming
 
 Status: project naming decision; physical storage format is not selected.
+[Architecture proposal 0.2](architecture.md) defines candidate retention,
+managed-object, backup, restore-incarnation, and single-writer boundaries.
 
 | Purpose | Name / rule |
 | --- | --- |
@@ -31,4 +33,5 @@ is standardized by this directory naming decision.
 
 Required future operations: initialize, inspect data location, export, restore,
 relocate, migrate schema, and remove service data. Their command syntax remains
-open. Retention and deduplication rules must be designed together before release.
+open. The architecture couples receipt collection to closed operation epochs;
+this design still needs field-level schemas and fault-tested implementation.

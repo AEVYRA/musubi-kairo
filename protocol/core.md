@@ -4,6 +4,13 @@ Design draft 0.1, 2026-09-28. This is not a complete normative specification or
 a claim of implementation conformance. The version is independent of the
 predecessor's release numbering. See [prior art](../research/prior-art.md).
 
+**Historical sketch:** [architecture proposal 0.2](../docs/architecture.md)
+now owns the active design for policy, transitions, command identity/retention,
+publication and recovery. It supersedes overlapping open questions below.
+In particular, command identities include incarnation and operation epoch;
+managed publication is separated from external effects; initial ownership uses
+explicit takeover rather than leases. Neither document is a released standard.
+
 ## Purpose
 
 Independent participants cooperate on shared artifacts while preserving an
