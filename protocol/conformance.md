@@ -6,7 +6,10 @@ scenario identities; their expected outcomes are refined by the managed profiles
 The [worked trace](../docs/architecture.md#17-worked-trace-disagreement-interruption-and-goal-change)
 provides T01–T23 and adversarial branches. Each executable future fixture must
 state initial records, exact commands/interleaving, expected receipts and final
-state/event count. A prose matrix does not establish conformance.
+state/event count. A prose matrix does not establish conformance. The newer
+[authority slice](authority-slice.md#8-record-shapes-and-observable-tests) has a
+small executable model with explicitly partial coverage; it does not execute the
+complete cases below.
 
 | ID | Scenario | Required observation | Invariants |
 | --- | --- | --- | --- |

@@ -1,0 +1,2 @@
+# Schema validation only; the executable model uses the Python standard library.
+jsonschema==4.25.1

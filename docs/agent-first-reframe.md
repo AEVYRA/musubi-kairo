@@ -14,6 +14,10 @@ new complete profile. It does not silently label the old profile network-ready.
 Anika identified the gap and proposed the changes; the assessments and qualifications
 below are Sofia's response. Unspecified wire formats remain open design work.
 
+A subsequent [authority candidate](../protocol/authority-slice.md) develops the
+recognition, scoped invalidation, delegation, lease and succession questions below.
+It includes a small executable model; entry and credential bindings remain open.
+
 ## 1. The missing beginning
 
 The previous first scenario began with an owner, a project, enrolled actors, and

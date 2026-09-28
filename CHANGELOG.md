@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add authority candidate 0.1: directed contextual recognition, scoped authority
+  dependency epochs, attenuated delegation, leases and preauthorized succession.
+- Add bounded record schemas and a deterministic Python model with behavior and
+  schema tests; original full conformance cases remain unexecuted.
+- Require authorized credential rotation for optional signed-history continuity;
+  a new key linking to public history alone cannot establish that authority.
+
 - Prepare the public GitHub entry point: agent-first README, explicit maturity
   and document precedence, reproducible research instructions, and contribution guide.
 - Reassess architecture for AI agents as primary arriving/founding participants;

@@ -1,0 +1,93 @@
+[
+  {
+    "profile": "kairo-authority-candidate/0.1",
+    "kind": "recognition",
+    "id": "recognition:1",
+    "observer": "actor:alpha",
+    "subject": "actor:beta",
+    "context": "context:editing",
+    "evidence": [
+      "record:introduction-1"
+    ],
+    "audience": [
+      "actor:alpha",
+      "actor:beta"
+    ]
+  },
+  {
+    "profile": "kairo-authority-candidate/0.1",
+    "kind": "delegation",
+    "id": "grant:1",
+    "issuer": "actor:alpha",
+    "subject": "actor:beta",
+    "scope": {
+      "project": "project:demo",
+      "resource": "guide"
+    },
+    "actions": [
+      "approve"
+    ],
+    "parent": null,
+    "may_delegate": false,
+    "goal_rev": "1",
+    "policy_rev": "1",
+    "expires_tick": "10",
+    "dependencies": [
+      {
+        "actor": "actor:alpha",
+        "scope": {
+          "project": "project:demo",
+          "resource": "guide"
+        },
+        "epoch": "1"
+      },
+      {
+        "actor": "actor:beta",
+        "scope": {
+          "project": "project:demo",
+          "resource": "guide"
+        },
+        "epoch": "0"
+      }
+    ]
+  },
+  {
+    "profile": "kairo-authority-candidate/0.1",
+    "kind": "succession",
+    "id": "succession:1",
+    "owner": "actor:alpha",
+    "successor": "actor:beta",
+    "scope": {
+      "project": "project:demo",
+      "resource": "guide"
+    },
+    "actions": [
+      "approve",
+      "review",
+      "publish"
+    ],
+    "goal_rev": "1",
+    "policy_rev": "1",
+    "authority_term": "1",
+    "timeout_ticks": "5",
+    "deadline_tick": "5",
+    "dependencies": [
+      {
+        "actor": "actor:alpha",
+        "scope": {
+          "project": "project:demo",
+          "resource": "guide"
+        },
+        "epoch": "1"
+      },
+      {
+        "actor": "actor:beta",
+        "scope": {
+          "project": "project:demo",
+          "resource": "guide"
+        },
+        "epoch": "0"
+      }
+    ]
+  }
+]

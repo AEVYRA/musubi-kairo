@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kairo authority candidate records (not authenticated wire envelopes)",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+    },
+    "counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "maxLength": 20
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/$defs/id"
+        },
+        "resource": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "project",
+        "resource"
+      ],
+      "additionalProperties": false
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "approve",
+          "review",
+          "publish"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "maxItems": 16,
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "actor": {
+            "$ref": "#/$defs/id"
+          },
+          "scope": {
+            "$ref": "#/$defs/scope"
+          },
+          "epoch": {
+            "$ref": "#/$defs/counter"
+          }
+        },
+        "required": [
+          "actor",
+          "scope",
+          "epoch"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "recognition": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-authority-candidate/0.1"
+        },
+        "kind": {
+          "const": "recognition"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "observer": {
+          "$ref": "#/$defs/id"
+        },
+        "subject": {
+          "$ref": "#/$defs/id"
+        },
+        "context": {
+          "$ref": "#/$defs/id"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "audience": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "profile",
+        "kind",
+        "id",
+        "observer",
+        "subject",
+        "context",
+        "evidence",
+        "audience"
+      ],
+      "additionalProperties": false
+    },
+    "delegation": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-authority-candidate/0.1"
+        },
+        "kind": {
+          "const": "delegation"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "issuer": {
+          "$ref": "#/$defs/id"
+        },
+        "subject": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "actions": {
+          "$ref": "#/$defs/actions"
+        },
+        "parent": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/id"
+            }
+          ]
+        },
+        "may_delegate": {
+          "type": "boolean"
+        },
+        "goal_rev": {
+          "$ref": "#/$defs/counter"
+        },
+        "policy_rev": {
+          "$ref": "#/$defs/counter"
+        },
+        "expires_tick": {
+          "$ref": "#/$defs/counter"
+        },
+        "dependencies": {
+          "$ref": "#/$defs/dependencies"
+        }
+      },
+      "required": [
+        "profile",
+        "kind",
+        "id",
+        "issuer",
+        "subject",
+        "scope",
+        "actions",
+        "parent",
+        "may_delegate",
+        "goal_rev",
+        "policy_rev",
+        "expires_tick",
+        "dependencies"
+      ],
+      "additionalProperties": false
+    },
+    "succession": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-authority-candidate/0.1"
+        },
+        "kind": {
+          "const": "succession"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "owner": {
+          "$ref": "#/$defs/id"
+        },
+        "successor": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "actions": {
+          "$ref": "#/$defs/actions"
+        },
+        "goal_rev": {
+          "$ref": "#/$defs/counter"
+        },
+        "policy_rev": {
+          "$ref": "#/$defs/counter"
+        },
+        "authority_term": {
+          "$ref": "#/$defs/counter"
+        },
+        "timeout_ticks": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$",
+          "maxLength": 20
+        },
+        "deadline_tick": {
+          "$ref": "#/$defs/counter"
+        },
+        "dependencies": {
+          "$ref": "#/$defs/dependencies"
+        }
+      },
+      "required": [
+        "profile",
+        "kind",
+        "id",
+        "owner",
+        "successor",
+        "scope",
+        "actions",
+        "goal_rev",
+        "policy_rev",
+        "authority_term",
+        "timeout_ticks",
+        "deadline_tick",
+        "dependencies"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/recognition"
+    },
+    {
+      "$ref": "#/$defs/delegation"
+    },
+    {
+      "$ref": "#/$defs/succession"
+    }
+  ]
+}

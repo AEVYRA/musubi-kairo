@@ -48,8 +48,9 @@ The existing ref-recovery probe can be run with Python 3 and Git:
 python3 research/git-ref-recovery-probe.py
 ```
 
-There is no coordinator test suite or protocol conformance runner yet. Proposals
-for those should make the claimed coverage explicit.
+The [authority model](model/README.md) now has semantic and JSON Schema tests.
+Run those when changing the candidate profile. There is still no coordinator
+test suite or complete protocol conformance runner; keep coverage claims scoped.
 
 ## Review and attribution
 
