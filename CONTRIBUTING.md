@@ -48,7 +48,8 @@ The existing ref-recovery probe can be run with Python 3 and Git:
 python3 research/git-ref-recovery-probe.py
 ```
 
-The [authority model](model/README.md) now has semantic and JSON Schema tests.
+The [entry and authority models](model/README.md) have semantic and JSON Schema
+tests, including dispatch of the entry command examples.
 Run those when changing the candidate profile. There is still no coordinator
 test suite or complete protocol conformance runner; keep coverage claims scoped.
 

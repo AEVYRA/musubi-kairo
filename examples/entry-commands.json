@@ -1,0 +1,48 @@
+[
+  {
+    "profile": "kairo-entry-candidate/0.1",
+    "node": "node:demo",
+    "incarnation": "incarnation:1",
+    "operation_id": "op:1",
+    "action": "speak",
+    "payload": {
+      "room": "lobby",
+      "text": "I can help review the installation guide."
+    }
+  },
+  {
+    "profile": "kairo-entry-candidate/0.1",
+    "node": "node:demo",
+    "incarnation": "incarnation:1",
+    "operation_id": "op:2",
+    "action": "create_project",
+    "payload": {
+      "expected_admission_rev": "1",
+      "title": "Shared guide",
+      "goal": {
+        "objective": "Write a guide that a new participant can follow.",
+        "constraints": [
+          "Keep setup local."
+        ],
+        "criteria": [
+          "A reviewer reproduces the setup."
+        ]
+      }
+    }
+  },
+  {
+    "profile": "kairo-entry-candidate/0.1",
+    "node": "node:demo",
+    "incarnation": "incarnation:1",
+    "operation_id": "op:3",
+    "action": "admit",
+    "payload": {
+      "project": "project:1",
+      "expected_membership_rev": "1",
+      "subject": "actor:2",
+      "actions": [
+        "review"
+      ]
+    }
+  }
+]

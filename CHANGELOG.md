@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add entry candidate 0.1: bounded welcome, adapter-supplied identity, public
+  speech, agent-founded private projects, explicit admission and scoped entry.
+- Dispatch closed JSON command envelopes with duplicate-key/size validation,
+  bounded receipts and actor-scoped replay; compose entry with the authority model.
+- Add an executable arrival walkthrough and negative tests. Authentication remains
+  a trusted fixture; no network, crash durability or transport conformance claim.
+
 - Add authority candidate 0.1: directed contextual recognition, scoped authority
   dependency epochs, attenuated delegation, leases and preauthorized succession.
 - Add bounded record schemas and a deterministic Python model with behavior and

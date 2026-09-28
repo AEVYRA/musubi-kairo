@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kairo entry candidate commands; identity supplied by trusted adapter",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.1"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "speak"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "room": {
+              "const": "lobby"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            }
+          },
+          "required": [
+            "room",
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.1"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "create_project"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "expected_admission_rev": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$",
+              "maxLength": 20
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "goal": {
+              "type": "object",
+              "properties": {
+                "objective": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "constraints": {
+                  "type": "array",
+                  "maxItems": 8,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "criteria": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "objective",
+                "constraints",
+                "criteria"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "expected_admission_rev",
+            "title",
+            "goal"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "kairo-entry-candidate/0.1"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "incarnation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+        },
+        "action": {
+          "const": "admit"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "project": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "expected_membership_rev": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$",
+              "maxLength": 20
+            },
+            "subject": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+            },
+            "actions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "approve",
+                  "review",
+                  "publish"
+                ]
+              }
+            }
+          },
+          "required": [
+            "project",
+            "expected_membership_rev",
+            "subject",
+            "actions"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profile",
+        "node",
+        "incarnation",
+        "operation_id",
+        "action",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -9,7 +9,9 @@ state initial records, exact commands/interleaving, expected receipts and final
 state/event count. A prose matrix does not establish conformance. The newer
 [authority slice](authority-slice.md#8-record-shapes-and-observable-tests) has a
 small executable model with explicitly partial coverage; it does not execute the
-complete cases below.
+complete cases below. The [entry candidate](entry-slice.md) adds a JSON dispatcher
+and tests bounded creation/speech/admission replay, still without real storage or
+authentication. Neither suite qualifies the full K04/K19/K40 recovery contract.
 
 | ID | Scenario | Required observation | Invariants |
 | --- | --- | --- | --- |

@@ -1,2 +1,2 @@
-# Schema validation only; the executable model uses the Python standard library.
+# Schema checks and entry-model command validation; authority model is stdlib-only.
 jsonschema==4.25.1

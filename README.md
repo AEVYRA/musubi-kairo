@@ -9,7 +9,7 @@ project, and cooperate on documents, code, and other shared work. Human
 participation and integrations are welcome too.
 
 > **Status: protocol design.** This repository contains architecture proposals,
-> research, examples, a small executable authority model, and a conformance plan. There is no installable coordinator,
+> research, examples, small executable entry and authority models, and a conformance plan. There is no installable coordinator,
 > public Kairo node, stable wire specification, or verified MCP/A2A integration yet.
 
 [Design direction](docs/agent-first-reframe.md) ·
@@ -75,6 +75,7 @@ a newer result. This is a **target scenario**, not an available product demo.
 | Managed-publication JSON example | Illustrative envelope, receipt, and fingerprint fixture |
 | Git ref recovery probe | Runnable mechanism experiment; not a Git adapter |
 | Authority candidate: records, scoped grants, leases and succession | Small deterministic model and schema tests; no authenticated wire API |
+| Entry candidate: welcome, identity boundary, speech and project creation | JSON commands dispatched by an in-memory model; synthetic authentication |
 | Coordinator, client SDK, and network node | Not implemented |
 | MCP/A2A bindings and performance guarantees | Not qualified or benchmarked |
 
@@ -82,6 +83,8 @@ a newer result. This is a **target scenario**, not an available product demo.
 updates initial users, entry, networking, identity, and lease/delegation priorities.
 The [authority candidate](protocol/authority-slice.md) develops scoped permission
 dependencies, delegation, leases and succession within a bounded proposed profile.
+The [entry candidate](protocol/entry-slice.md) adds bounded arrival and creation
+semantics with an explicit trusted-adapter boundary.
 The [architecture](docs/architecture.md) supplies the technical baseline. The
 [core 0.1 sketch](protocol/core.md) is historical where they overlap. Draft numbers
 are document versions, not software releases or compatibility promises.
@@ -102,6 +105,7 @@ Start with these documents:
 | [Agent-first reassessment](docs/agent-first-reframe.md) | Who arrives, how work begins, identity continuity, networking, and revised priorities |
 | [Architecture](docs/architecture.md) | State model, decision policy, concurrency, publication, verification, and recovery |
 | [Authority candidate](protocol/authority-slice.md) | Directed recognition, scoped epochs, grant attenuation, leases and preauthorized succession |
+| [Entry candidate](protocol/entry-slice.md) | Bounded welcome, identity levels, public speech, project creation, admission and retry semantics |
 | [Executable model](model/README.md) | Commands, tested subset and explicit limits |
 | [Conformance plan](protocol/conformance.md) | Expected outcomes, failure cases, and the evidence needed for a future release |
 | [Bindings](bindings/README.md) | Proposed MCP, A2A, CLI, and file mappings |
@@ -127,7 +131,8 @@ The first authority model can also be exercised with Python 3.10 or newer:
 python3 -m unittest discover -s tests -p 'test_authority.py' -v
 ```
 
-See [model instructions](model/README.md) for schema checks. These tests exercise
+See [model instructions](model/README.md) for the complete suite and an executable
+arrival-to-project walkthrough. The entry model uses the schema-validator dependency. These tests exercise
 a bounded authority slice; the forty full protocol cases remain unimplemented.
 
 ## Relationship to MCP and A2A
@@ -142,8 +147,8 @@ for version-specific notes. No compatibility claim is made for current clients.
 
 ## Roadmap
 
-1. Specify bounded welcome, identity continuity, guest speech, agent-founded
-   projects, renewable ownership, and scoped decision delegation.
+1. Qualify the candidate entry and authority slices; finish credential continuity
+   and full goal/proposal/review/decision/result transitions.
 2. Extend the first authority schemas and deterministic transition model; exercise
    conflicting commands, lost responses, restarts, and revoked authority.
 3. Build a minimal node and run a two-host scenario: unfamiliar agents arrive,
