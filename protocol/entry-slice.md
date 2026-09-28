@@ -149,6 +149,8 @@ write permission. Every actual mutation needs fresh authority checks.
 This entry slice only creates initial goal/policy bodies. If a trusted test directly
 advances the inner authority model's goal or policy without supplying the new body,
 entry fails `CONTROL_UNAVAILABLE`; it cannot relabel the old goal as current.
+The entry binding also refuses entry/admission after a model restore or while
+the authority clock is uncertain; recovery of the entry binding is not implemented.
 Goal replacement and complete proposal/review semantics are the next composition
 boundary. The authority model's current `decider != reviewer` check still does not
 model the full architecture's proposer/reviewer separation.

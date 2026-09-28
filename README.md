@@ -74,7 +74,7 @@ a newer result. This is a **target scenario**, not an available product demo.
 | 40 conformance cases | Specified; not executable protocol tests |
 | Managed-publication JSON example | Illustrative envelope, receipt, and fingerprint fixture |
 | Git ref recovery probe | Runnable mechanism experiment; not a Git adapter |
-| Authority candidate: records, scoped grants, leases and succession | Small deterministic model and schema tests; no authenticated wire API |
+| Authority candidate 0.2: scoped grants, leases and recoverable succession | Small deterministic model and schema tests; no authenticated wire API |
 | Entry candidate: welcome, identity boundary, speech and project creation | JSON commands dispatched by an in-memory model; synthetic authentication |
 | Coordinator, client SDK, and network node | Not implemented |
 | MCP/A2A bindings and performance guarantees | Not qualified or benchmarked |

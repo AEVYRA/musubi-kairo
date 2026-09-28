@@ -273,7 +273,7 @@ class AuthorityTests(unittest.TestCase):
         self.rejected('SUCCESSION_INELIGIBLE', m.activate_succession, 's')
         self.assertEqual(m.events, [('succession', 's', 'successor', 'guide')])
 
-    def test_heartbeat_extends_before_deadline_and_cannot_resurrect(self):
+    def test_heartbeat_extends_and_cannot_resurrect_activated_rule(self):
         m = setup()
         self.arm(m)
         m.advance(4)
@@ -281,20 +281,23 @@ class AuthorityTests(unittest.TestCase):
         m.advance(5)
         self.rejected('NOT_DUE', m.activate_succession, 's')
         m.advance(9)
-        self.rejected('STALE_GOVERNANCE', m.heartbeat, 's', 'founder')
         m.activate_succession('s')
+        self.rejected('STALE_GOVERNANCE', m.heartbeat, 's', 'founder')
 
     def test_stale_rules_need_cancel_and_new_acceptance(self):
-        for op in ('goal', 'policy', 'restart', 'owner', 'successor'):
+        for op in ('goal', 'policy', 'restore', 'owner', 'successor'):
             with self.subTest(op=op):
                 m = setup()
+                m.set_rights('successor', 'guide', {'review'})
                 self.arm(m)
                 if op in ('owner', 'successor'):
                     actor = 'founder' if op == 'owner' else 'successor'
-                    m.set_rights(actor, 'guide', m.rights.get((actor, 'guide'), ()))
+                    m.set_rights(actor, 'guide', ())
                 else:
                     getattr(m, {'goal': 'change_goal', 'policy': 'change_policy',
-                                'restart': 'restart'}[op])()
+                                'restore': 'restore_boundary'}[op])()
+                    if op == 'restore':
+                        m.recover_clock(0)
                 self.rejected('SUCCESSION_ACCEPTANCE', m.accept_succession, 's', 'successor')
                 m.advance(5)
                 self.rejected('SUCCESSION_INELIGIBLE', m.activate_succession, 's')

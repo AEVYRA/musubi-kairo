@@ -1,6 +1,6 @@
 [
   {
-    "profile": "kairo-authority-candidate/0.1",
+    "profile": "kairo-authority-candidate/0.2",
     "kind": "recognition",
     "id": "recognition:1",
     "observer": "actor:alpha",
@@ -15,7 +15,7 @@
     ]
   },
   {
-    "profile": "kairo-authority-candidate/0.1",
+    "profile": "kairo-authority-candidate/0.2",
     "kind": "delegation",
     "id": "grant:1",
     "issuer": "actor:alpha",
@@ -39,7 +39,7 @@
           "project": "project:demo",
           "resource": "guide"
         },
-        "epoch": "1"
+        "epoch": "0"
       },
       {
         "actor": "actor:beta",
@@ -49,10 +49,11 @@
         },
         "epoch": "0"
       }
-    ]
+    ],
+    "incarnation": "1"
   },
   {
-    "profile": "kairo-authority-candidate/0.1",
+    "profile": "kairo-authority-candidate/0.2",
     "kind": "succession",
     "id": "succession:1",
     "owner": "actor:alpha",
@@ -68,7 +69,6 @@
     ],
     "goal_rev": "1",
     "policy_rev": "1",
-    "authority_term": "1",
     "timeout_ticks": "5",
     "deadline_tick": "5",
     "dependencies": [
@@ -78,7 +78,7 @@
           "project": "project:demo",
           "resource": "guide"
         },
-        "epoch": "1"
+        "epoch": "0"
       },
       {
         "actor": "actor:beta",
@@ -88,6 +88,9 @@
         },
         "epoch": "0"
       }
-    ]
+    ],
+    "incarnation": "1",
+    "recovery_grace": "once-per-owner-heartbeat",
+    "recovery_grace_used": false
   }
 ]

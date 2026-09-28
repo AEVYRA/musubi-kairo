@@ -1,8 +1,14 @@
-# Authority candidate 0.1: recognition, scoped grants, and succession
+# Authority candidate 0.2: recognition, scoped grants, and succession
 
 2026-09-28 · **candidate semantics and executable design model**, not a released
-wire profile or coordinator. Written by Sofia following Anika's second review.
-The executable changes have not yet received an independent review.
+wire profile or coordinator. Sofia's revision following Anika's independent
+review of candidate 0.1. The new patch has not yet received independent review.
+See the [review dispositions](../research/authority-recovery-review.md).
+
+Candidate 0.2 changes epoch invalidation, succession recovery and record shapes.
+It is not a compatible interpretation of existing 0.1 consent records. A future
+migration must explicitly reauthorize the changed policy; no automatic migration
+of persisted rules or wire compatibility is implemented here.
 
 This slice develops the [agent-first direction](../docs/agent-first-reframe.md).
 It proposes replacing the architecture's broad membership invalidation **only for
@@ -57,24 +63,27 @@ alive. This candidate has the following dependency closure:
 
 | Operation or record | Dependencies checked |
 | --- | --- |
-| Direct approval | Current goal/policy, approving actor and required reviewer's scoped epochs, current approval/review rights |
+| Direct approval | Current incarnation/goal/policy, approving actor and required reviewer's scoped epochs, current approval/review rights |
 | Delegated approval | The above approving/reviewer epochs, plus the selected grant and all ancestor grants |
-| Grant | Goal/policy, issuer and subject scoped epochs, expiry, revocation, and recursively its parent |
+| Grant | Incarnation, goal/policy, issuer and subject scoped epochs, expiry, revocation, and recursively its parent |
 | Execution lease | Executor's current scoped epoch/right, goal/policy, authority term, generation and deadline |
 | Publication | Current decision dependencies, live lease and unchanged base revision, checked in one transition |
-| Succession | Goal/policy, owner and successor scoped epochs, exact owner, authority term, prior acceptance and deadline |
+| Succession | Incarnation/goal/policy, owner and successor scoped epochs, exact owner, frozen transferred rights, prior acceptance and deadline |
 
-Every scoped rights update advances its epoch, including restoring identical
-rights. Thus revoke→restore does not revive an old approval. Updates in another
-resource scope do not change this scope's epoch. Enrolling another actor changes
-the roster but not these dependency stamps. A policy change invalidates decisions
-because it may change which dependencies must be collected.
+An authority epoch advances when a scoped rights update removes any existing
+right, including a mixed removal/addition. Pure additions and no-op updates leave
+it unchanged. Epochs start at zero. Thus revoke→restore cannot revive an old
+approval: the removal already advanced its dependency epoch. Other scopes and
+unrelated membership remain independent. A policy change still invalidates
+approvals because it may change how dependency closure must be collected.
 
-This is conservative within a scope: adding an irrelevant right to the same
-reviewer invalidates their old approval. Finer per-action epochs are possible,
-but are not necessary for the first model. Policies such as “all current members
-must review” would depend on the roster itself; this profile does not support
-them, and its unrelated-member result must not be generalized to them.
+This optimization applies to the model's fixed, positive action sets: adding
+`publish` does not make an existing `review` permission false. Future separation
+of duties, role exclusions or other non-monotone policies need explicit policy
+revisions and additional dependencies; do not extend this rule blindly to them.
+Removing even an unused right in the same scope remains conservatively invalidating.
+“All current members must review” policies would also depend on the roster and
+are not supported by this candidate.
 
 A revocation ordered before publication blocks it. A revocation ordered after
 publication affects future authority and leaves the historical publication intact.
@@ -100,7 +109,14 @@ hierarchies are intentionally absent. Expiry uses registry time and is exclusive
 Revocation by the grant issuer or current scoped owner invalidates the grant and
 all descendants through dependency traversal. The implementation must evaluate
 this bounded closure at the publication boundary, not just when issuing a grant.
-An expired or revoked grant does not undo past effects.
+Both expiry and revocation disable future publication under that delegation,
+including an approval issued before expiry. The immutable approval remains a
+historical record; it is not a permanent publication capability. A publication
+that already committed remains historical too. This deliberately retains the
+0.1 continuous-authorization policy: allowing old approvals after expiry would
+require a separately bounded publication grant, which is not defined here.
+An original issuer may still revoke its own grant after losing scoped rights;
+that cannot add authority, and removal already invalidated the affected chain.
 
 Attenuation follows the general capability-delegation pattern described by the
 [UCAN delegation specification](https://github.com/ucan-wg/delegation) (1.0.0
@@ -120,47 +136,84 @@ receives a higher generation. Publication checks the current stored lease, not a
 client's copy of its old deadline.
 
 The model uses monotonic logical registry ticks and durations from one to ten
-ticks. A restart increases the authority term and fences every previous lease.
-Approval can survive that restart if its authority dependencies still hold; the
-executor must acquire a fresh lease. This does not model restoring an older
-registry snapshot, which still requires the architecture's incarnation rules.
+ticks. A retained-state `restart()` advances the execution term and fences every
+previous lease. An otherwise eligible approval can survive, but its executor must
+obtain a fresh lease. Succession consent is tied to registry incarnation, not the
+execution term. A restart is distinct from rolling back to an older snapshot.
 
-Clock rollback is rejected. A production implementation needs a durable term,
-clock/restart policy and a storage transaction that enforces the final checks.
-Uncertainty about time or recovery must block a write rather than assert that a
-lease is live. Python's sequential function calls establish none of those storage
-or failover guarantees. External Git/filesystem publication remains outside this
-model's atomic boundary.
+The trusted environment must establish a nondecreasing time coordinate consistent
+with retained state. The model does not infer downtime or trust an agent clock.
+`restart(clock_verified=False)` fences old leases and blocks time-sensitive
+operations. `recover_clock(verified_moment)` requires a value at least as high as
+the retained time, then allows recovery grace below. Repeating restart cannot turn
+an unverified clock into a verified one. This argument is a **trusted test input**,
+not an implemented clock-verification algorithm. Production needs a durable time
+and term policy; absent that evidence, it must remain blocked.
+
+`restore_boundary()` models rollback invalidation: it changes incarnation and
+term and marks time uncertain. Old grants, decisions and succession rules remain
+historical but cannot authorize new effects, even after clock recovery. Old
+leases are fenced. This method neither loads a snapshot nor proves the new
+incarnation is unique across restored copies. Those storage/deployment obligations
+remain required by the full architecture. External Git/filesystem publication
+is outside this model's atomic boundary.
 
 ## 6. Succession uses previously granted authority
 
-The scoped owner may nominate a known successor under the current goal/policy,
-with an explicit inactivity interval. The successor must accept that exact rule
-before its initial deadline. This is prior consent by both parties; lack of a
-reply cannot create a rule or supply acceptance. One uncancelled, unfired rule
-may exist per scope. A stale rule must be explicitly cancelled before replacement.
-Replacing it requires fresh successor acceptance; acceptance is not inherited.
+The scoped owner nominates a known successor under the current incarnation,
+goal and policy. The immutable consent body freezes the owner's transfer action
+set and an inactivity interval. The successor must accept before the initial
+deadline. Before acceptance, neither heartbeat nor restart extends that window.
+One uncancelled, unfired rule may exist per scope. Replacement requires cancelling
+the prior rule, a fresh record ID and fresh successor acceptance.
 
-An authenticated owner heartbeat received before the deadline renews that rule's
-deadline by its agreed interval. At the deadline, the heartbeat is too late. A
-registry activation may then execute an accepted, current rule once. This means
-“no accepted heartbeat before the registry deadline”, not proof that the founder
-has died or stopped thinking. Network partitions can cause a preauthorized
-transfer; the owner explicitly accepts that possibility when creating the rule.
+Expiry makes an accepted rule eligible for activation; it is not itself an
+ownership transfer. Until activation commits, an authenticated current owner may
+send a heartbeat, even after the deadline, or explicitly cancel. Heartbeat renews
+the deadline to `now + timeout`. A late heartbeat ordered before activation delays
+it; activation ordered first transfers authority and the old owner's heartbeat or
+cancel is rejected. Thus both races have defined serial outcomes. Eventual
+activation needs a registry scheduler and a writable interval; the model only
+exposes the transition, it does not implement the scheduler.
 
-Activation transfers scoped ownership and the owner's current direct rights to
-the successor, preserving the successor's existing direct rights. It removes the
-old owner's direct rights in this scope and advances both epochs. Consequently,
-old owner-derived grants, decisions and leases become stale as applicable. Other
-scopes stay intact. Activation records an event but approves no project proposal,
-publishes no artifact, and removes no historical dissent.
+### 6.1 One recovery grace per owner-contact interval
 
-Owner/recipient rights changes, goal/policy changes, or authority restart make an
-armed rule ineligible. Restart does **not** immediately declare the owner absent.
-This conservative first profile may leave governance blocked until the current
-owner cancels and re-arms a rule with fresh acceptance. It does not solve recovery
-when that owner and all previously valid recovery authorities are gone. That
-availability tradeoff is explicit, pending a durable restart/recovery profile.
+An accepted, current rule survives an ordinary retained-state restart. After time
+is verified, its first restart since creation or the last accepted owner heartbeat
+sets `deadline = max(deadline, now + timeout)` and consumes its recovery grace.
+Subsequent restarts cannot extend it again until a new authenticated owner heartbeat
+resets that budget. The grace flag is durable derived state, part of the agreed
+0.2 recovery policy; it must survive a restart with the rest of the rule.
+
+This grants one interval in which the owner can return after an outage without
+letting repeated restarts alone postpone succession indefinitely. After the grace
+is spent, another outage may leave a due rule that activates promptly on recovery.
+That is a declared tradeoff, accepted with the rule, not proof the owner is absent
+or dead. With repeated outages and no opportunity to execute a transaction there
+is still no unconditional liveness guarantee. An unverified clock blocks activation,
+even when availability suffers.
+
+Cancelled, fired, unaccepted or otherwise stale rules get no grace. A restore
+changes incarnation and never inherits live consent from the old lineage.
+Reactivation then requires the current authorized owner to cancel/re-arm and the
+successor to accept again; this is deliberately stronger than a normal restart.
+
+### 6.2 Effects and scope
+
+Activation transfers scoped ownership and exactly the **frozen** direct action set,
+preserving the successor's existing direct rights. The set may be empty; ownership
+is a separate governance role. Rights added to the old owner after consent are
+not silently passed on. It removes all old-owner direct rights in this scope.
+Their removal advances the old owner's epoch; adding rights to the successor does
+not invalidate the successor's pre-existing review. Decisions depending on the
+old owner are still invalidated as applicable. Other scopes stay intact.
+
+Goal/policy changes, removal of relevant scoped rights, owner replacement or
+restore invalidate a rule. Pure additions do not widen its frozen transfer set.
+Activation records an event but approves no proposal, publishes no artifact, and
+removes no historical dissent. Both the accepted rule and its derived deadline /
+grace-used flag require durable storage in a real implementation; Python calls
+and in-memory fields provide no crash-durability proof.
 
 ## 7. Optional signed history continuity
 
@@ -188,9 +241,10 @@ Signatures, canonicalization and authentication envelopes remain unspecified her
 `dependencies` on a grant contains that record's issuer/subject stamps; its parent
 adds recursive dependencies. On succession it contains owner/successor stamps.
 These are registry-derived fields, not client-selected proofs. Succession `actions`
-is the owner's scoped rights agreed at creation; rights epochs prevent silent
-change. `deadline_tick` is a derived current deadline, renewable under the accepted
-interval. Acceptance/cancellation are separate transitions, not booleans an
+is the frozen scoped action set agreed at creation, not a live query of the
+owner's rights. `incarnation` binds grants/rules to the registry lineage.
+`deadline_tick` and `recovery_grace_used` are derived state, updated only by
+accepted transitions under `recovery_grace: once-per-owner-heartbeat`. Acceptance/cancellation are separate transitions, not booleans an
 untrusted record author can set. Schema validity proves none of these semantics.
 
 The abstract model uses one implicit project, resource strings and integer ticks;
@@ -210,6 +264,7 @@ labels are model diagnostics, not finalized public error codes.
 | Closed record shapes and malformed examples | Structural checks, no actor authentication |
 
 See [model instructions](../model/README.md) for exact commands and limitations.
-The next slice must define welcome/identity/speech/project creation, the credential
-contract and command envelope, then connect them to the transition model. Storage
-recovery, independent review and the two-host agent experiment remain release gates.
+The [entry slice](entry-slice.md) now supplies bounded arrival and a JSON command
+dispatcher, with synthetic authentication. Complete goal/proposal/review/result
+transitions, verified credential bindings, storage recovery, independent review
+and the two-host agent experiment remain release gates.

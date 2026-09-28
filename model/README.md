@@ -34,7 +34,8 @@ These finite examples are not exhaustive model checking or a proof of arbitrary
 concurrency. All calls are serialized; actor strings are assumed authenticated.
 
 `enroll`, `bootstrap_scope`, `set_rights`, `advance`, `restart`, `change_goal` and
-`change_policy` are trusted environment transitions. They intentionally do not
+`change_policy`, `recover_clock` and `restore_boundary` are trusted environment
+transitions. They intentionally do not
 expose a public governance API. An actual server must authorize those actions.
 `approve` assumes the exact proposal and supportive assessment already exist;
 its distinct actor check does not establish independent controllers. Resource
@@ -44,7 +45,10 @@ the model that a real managed-storage transaction must implement.
 The authority model retains all records in memory and has no admission quotas
 or compaction. The entry layer separately enforces small aggregate limits.
 Grant traversal is bounded to eight links; this is not a large-project benchmark.
-Restart changes a term in memory, with no process termination or disk recovery.
+Restart fences leases while retaining eligible succession consent with one grace
+per owner-heartbeat interval. Clock uncertainty blocks time-sensitive operations.
+The restore boundary changes incarnation; it does not load a disk snapshot.
+See [review dispositions](../research/authority-recovery-review.md).
 `publish` rejects a repeated consumed decision; command receipts/idempotent replay
 are outside the authority slice and remain required by the full architecture.
 Recognition audience enforcement and cryptographic continuity are not implemented.

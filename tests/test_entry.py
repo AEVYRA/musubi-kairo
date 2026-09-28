@@ -182,6 +182,26 @@ class EntryTests(unittest.TestCase):
         self.assertEqual(a.heads[self.n.SCOPE], 1)
         self.assertEqual(self.n.enter(reviewer, project_id)['direct_actions'], ['review'])
 
+    def test_entry_rejects_unrepresented_restore_or_uncertain_clock(self):
+        for mode in ('restore', 'clock'):
+            with self.subTest(mode=mode):
+                n = EntryModel()
+                s, _ = actor(n, 'verified:owner')
+                _, peer = actor(n, 'verified:peer')
+                project_id = send(n, s, 'create_project', creation())['result']['project']
+                a = n.projects[project_id].authority
+                if mode == 'restore':
+                    a.restore_boundary()
+                    a.recover_clock(0)
+                else:
+                    a.restart(clock_verified=False)
+                self.rejected('CONTROL_UNAVAILABLE', n.enter, s, project_id)
+                result = send(n, s, 'admit', {'project': project_id,
+                    'expected_membership_rev': '1', 'subject': peer['actor'],
+                    'actions': ['review']}, 'op:admit')
+                self.assertEqual(result['code'], 'CONTROL_UNAVAILABLE')
+                self.assertNotIn(peer['actor'], n.projects[project_id].members)
+
     def test_unknown_control_body_is_not_mislabelled_as_current(self):
         project_id = self.create()['result']['project']
         self.n.projects[project_id].authority.change_goal()

@@ -72,7 +72,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-authority-candidate/0.1"
+          "const": "kairo-authority-candidate/0.2"
         },
         "kind": {
           "const": "recognition"
@@ -124,7 +124,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-authority-candidate/0.1"
+          "const": "kairo-authority-candidate/0.2"
         },
         "kind": {
           "const": "delegation"
@@ -168,6 +168,9 @@
         },
         "dependencies": {
           "$ref": "#/$defs/dependencies"
+        },
+        "incarnation": {
+          "$ref": "#/$defs/counter"
         }
       },
       "required": [
@@ -183,7 +186,8 @@
         "goal_rev",
         "policy_rev",
         "expires_tick",
-        "dependencies"
+        "dependencies",
+        "incarnation"
       ],
       "additionalProperties": false
     },
@@ -191,7 +195,7 @@
       "type": "object",
       "properties": {
         "profile": {
-          "const": "kairo-authority-candidate/0.1"
+          "const": "kairo-authority-candidate/0.2"
         },
         "kind": {
           "const": "succession"
@@ -209,15 +213,22 @@
           "$ref": "#/$defs/scope"
         },
         "actions": {
-          "$ref": "#/$defs/actions"
+          "type": "array",
+          "items": {
+            "enum": [
+              "approve",
+              "review",
+              "publish"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 3,
+          "uniqueItems": true
         },
         "goal_rev": {
           "$ref": "#/$defs/counter"
         },
         "policy_rev": {
-          "$ref": "#/$defs/counter"
-        },
-        "authority_term": {
           "$ref": "#/$defs/counter"
         },
         "timeout_ticks": {
@@ -230,6 +241,15 @@
         },
         "dependencies": {
           "$ref": "#/$defs/dependencies"
+        },
+        "incarnation": {
+          "$ref": "#/$defs/counter"
+        },
+        "recovery_grace": {
+          "const": "once-per-owner-heartbeat"
+        },
+        "recovery_grace_used": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -242,10 +262,12 @@
         "actions",
         "goal_rev",
         "policy_rev",
-        "authority_term",
         "timeout_ticks",
         "deadline_tick",
-        "dependencies"
+        "dependencies",
+        "incarnation",
+        "recovery_grace",
+        "recovery_grace_used"
       ],
       "additionalProperties": false
     }

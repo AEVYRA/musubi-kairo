@@ -48,6 +48,16 @@ class SchemaTests(unittest.TestCase):
             with self.subTest(record=record):
                 self.assertFalse(self.validator.is_valid(record))
 
+    def test_old_profile_and_term_based_succession_are_rejected(self):
+        for row in self.examples:
+            self.assertFalse(self.validator.is_valid(
+                {**row, 'profile': 'kairo-authority-candidate/0.1'}))
+        old_rule = copy.deepcopy(self.examples[2])
+        old_rule['authority_term'] = old_rule.pop('incarnation')
+        self.assertFalse(self.validator.is_valid(old_rule))
+        self.assertFalse(self.validator.is_valid(
+            {**self.examples[2], 'recovery_grace_used': 'false'}))
+
     def test_schema_does_not_claim_semantic_authentication(self):
         # A shape validator cannot know whether this issuer authorized anything.
         forged_claim = copy.deepcopy(self.examples[1])

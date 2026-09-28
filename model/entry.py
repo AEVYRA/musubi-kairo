@@ -202,6 +202,8 @@ class EntryModel:
         project = self.projects.get(body['project'])
         # Unknown and inaccessible IDs deliberately yield the same outcome.
         require(project is not None and p.actor in project.members, 'NOT_ACCESSIBLE')
+        require(project.authority.incarnation == 1 and project.authority.clock_ready,
+                "CONTROL_UNAVAILABLE")
         require(project.authority.owners[self.SCOPE] == p.actor, 'FORBIDDEN')
         require(body['expected_membership_rev'] == str(project.membership_rev),
                 'MEMBERSHIP_CONFLICT')
@@ -223,7 +225,8 @@ class EntryModel:
         require(project is not None and p.actor in project.members, 'NOT_ACCESSIBLE')
         a = project.authority
         # Goal/policy replacement bodies are outside this entry slice.
-        require(a.goal == 1 and a.policy == 1, "CONTROL_UNAVAILABLE")
+        require(a.goal == 1 and a.policy == 1 and a.incarnation == 1
+                and a.clock_ready, "CONTROL_UNAVAILABLE")
         return {'project': project_id, 'title': project.title,
                 'goal': deepcopy(project.goal), 'goal_rev': str(a.goal),
                 'policy_rev': str(a.policy), 'membership_rev': str(project.membership_rev),

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Revise authority candidate to 0.2 after Anika's independent review: preserve
+  accepted succession across retained-state restarts, with one recovery grace
+  per owner-heartbeat interval; fence old leases and block uncertain clocks.
+- Allow late owner heartbeat/cancellation before activation, and preserve existing
+  reviews on additive rights changes. Freeze the rights accepted for succession.
+- Bind grants, decisions and succession to incarnation; model restore invalidation.
+  Clarify that expired delegation preserves history but blocks future publication.
+- Update record schemas with explicit incompatible candidate versioning and add
+  recovery/order regression tests; real storage and clock verification remain open.
+
 - Add entry candidate 0.1: bounded welcome, adapter-supplied identity, public
   speech, agent-founded private projects, explicit admission and scoped entry.
 - Dispatch closed JSON command envelopes with duplicate-key/size validation,
