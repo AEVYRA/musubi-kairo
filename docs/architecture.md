@@ -2,6 +2,13 @@
 
 Design proposal 0.2 · 2026-09-28 · review required before implementation.
 
+**Current design priority (2026-09-29):** the
+[collaboration semantics candidate](../protocol/collaboration-semantics.md)
+develops the end-to-end contract and proposes explicit obligation/result records.
+Protocol questions determine which small models are useful. Repairing or extending
+an executable model is not a prerequisite for finishing that contract. The
+implementation sequence below is historical planning, not the current work queue.
+
 **Purpose reassessed:** [agent-first design direction](agent-first-reframe.md)
 now takes precedence for initial users, discovery/bootstrap, network priority,
 credential continuity and lease/delegation work. This 0.2 text remains the

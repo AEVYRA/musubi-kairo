@@ -1,5 +1,10 @@
 # Conformance design matrix
 
+The [collaboration semantics candidate](collaboration-semantics.md#10-independent-review-questions-and-acceptance-traces)
+adds S01–S14 for independent textual review, including obligation acceptance,
+result verification and admission/domain-outcome separation. These are specified,
+unexecuted cases. They do not rename K01–K40 or extend existing model coverage.
+
 Status: specified scenarios, **not executed protocol tests**. The current contract
 is [architecture proposal 0.2](../docs/architecture.md). K01–K12 retain the initial
 scenario identities; their expected outcomes are refined by the managed profiles.

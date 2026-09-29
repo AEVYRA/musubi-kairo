@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Prioritize specification over implementation hardening. Add collaboration
+  semantics candidate 0.1: goal/position/decision/result cycle, explicit offer
+  acceptance, obligation lifecycle, verification, and handoff provenance.
+- Add a worked semantic trace and fourteen unexecuted independent-review cases.
+  Distinguish access rejection from terminal domain outcomes, evidence of no
+  commit from unknown effects, and credential continuity from new admission.
+- Incorporate Yue's review with explicit qualifications: receipt collection
+  must preserve necessary domain state; catching an exception cannot prove
+  rollback. Model saturation and credential-recovery policy remain open.
+- No runtime, model behavior or wire-schema change; existing model tests do not
+  establish conformance to this candidate.
+
 - Add entry 0.2 / authority 0.3 governance binding after Anika's recovery review
   and Tessa's cross-slice review: prior membership and current credential eligibility
   checked before planning/activation, explicit heartbeat, and five JSON commands.

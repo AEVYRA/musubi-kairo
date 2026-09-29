@@ -1,5 +1,11 @@
 # Executable entry and authority design models
 
+Design priority: [collaboration semantics](../protocol/collaboration-semantics.md).
+These models do not implement that candidate. Their finite shared receipt store
+can saturate from heartbeat or terminal denials and block new command mutations;
+read/replay remain available. Long-running operation is not qualified. Storage
+repair remains separate from completing and reviewing the semantic contract.
+
 These deterministic in-memory models explore the
 [authority candidate](../protocol/authority-slice.md) and the
 [entry candidate](../protocol/entry-slice.md). They are not the Kairo node,

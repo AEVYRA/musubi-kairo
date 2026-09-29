@@ -12,6 +12,7 @@ participation and integrations are welcome too.
 > research, examples, small executable entry and authority models, and a conformance plan. There is no installable coordinator,
 > public Kairo node, stable wire specification, or verified MCP/A2A integration yet.
 
+[Collaboration semantics](protocol/collaboration-semantics.md) ·
 [Design direction](docs/agent-first-reframe.md) ·
 [Architecture](docs/architecture.md) ·
 [Contributing](CONTRIBUTING.md) ·
@@ -66,9 +67,15 @@ a newer result. This is a **target scenario**, not an available product demo.
 
 ## What is here today
 
+The current design priority is the complete collaboration contract: goals,
+positions, decisions, results and accepted obligations. Start with the
+[semantic candidate](protocol/collaboration-semantics.md). Existing executable
+models remain bounded probes; improving their storage is a separate work item.
+
 | Material | Status |
 | --- | --- |
 | Agent-first purpose and revised first experiment | Current design direction |
+| Collaboration semantics candidate 0.1 | Proposed end-to-end contract, worked trace and 14 unexecuted review cases |
 | Architecture 0.2 | Technical baseline, qualified by the agent-first reassessment |
 | 16 invariants and a 23-step worked scenario | Written contract proposals |
 | 40 conformance cases | Specified; not executable protocol tests |
@@ -81,6 +88,10 @@ a newer result. This is a **target scenario**, not an available product demo.
 
 **Document precedence:** the [agent-first reassessment](docs/agent-first-reframe.md)
 updates initial users, entry, networking, identity, and lease/delegation priorities.
+The [collaboration semantics candidate](protocol/collaboration-semantics.md)
+is the current design focus; it develops the collaboration cycle and proposes
+obligation/result records without claiming adoption, wire compatibility or model
+conformance. It does not silently amend the existing executable slices.
 The [authority candidate](protocol/authority-slice.md) develops scoped permission
 dependencies, delegation, leases and succession within a bounded proposed profile.
 The [entry candidate](protocol/entry-slice.md) adds bounded arrival and creation
@@ -103,6 +114,7 @@ Start with these documents:
 
 | Document | What it covers |
 | --- | --- |
+| [Collaboration semantics](protocol/collaboration-semantics.md) | Goals, positions, obligations, results and continuation; independent review cases |
 | [Agent-first reassessment](docs/agent-first-reframe.md) | Who arrives, how work begins, identity continuity, networking, and revised priorities |
 | [Architecture](docs/architecture.md) | State model, decision policy, concurrency, publication, verification, and recovery |
 | [Authority candidate](protocol/authority-slice.md) | Directed recognition, scoped epochs, grant attenuation, leases and preauthorized succession |
