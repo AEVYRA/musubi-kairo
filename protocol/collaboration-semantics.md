@@ -1,6 +1,12 @@
 # Kairo collaboration semantics
 
-Candidate 0.1 · 2026-09-29 · proposed observable contract, awaiting independent review.
+Candidate 0.2 · 2026-09-29 · proposed observable contract, awaiting independent review.
+
+Revision 0.2 adds the [obligation review profile](obligation-profile.md): explicit
+closure authority, deadlines, race outcomes and goal rebinding. It corrects the
+preparation example's missing verification act. See the
+[author review](../research/obligation-semantics-author-review.md) for the gaps in
+0.1; that review is not independent validation.
 
 The design priority is a coherent protocol that different implementations can
 follow. Executable models are probes of specific rules. Repairing the current
@@ -76,7 +82,7 @@ describe an execution context; they do not create new actors or rights.
 | ProposalRevision | Exact intended change and inputs, candidate output where applicable, rationale and required reviewers |
 | Assessment | One actor's stance on one exact proposal revision, addressed criteria and grounds; optional replacement link |
 | Decision | Approve/reject under a named policy and authority basis; assessed snapshot, dispositions and reasons |
-| ObligationOffer | Named prospective owner, exact task/deliverable, goal/work revision, acceptance criteria, deadline if any and permitted withdrawal policy |
+| ObligationOffer | Issuer, named recipient, exact task/deliverable, goal/work revision, criteria/verifiers, optional acceptance cutoff/delivery deadline and withdrawal policy |
 | ObligationResponse | Prospective owner's accept/decline, naming the exact offer revision and any explicit replacement |
 | Result | Producer, work/attempt, applicable decision, exact outputs or effect references, claimed outcome and limitations |
 | Verification | Verifier, exact result and criteria, pass/fail/unknown per criterion, evidence and scope |
@@ -161,13 +167,21 @@ checks and records the transition atomically. A weaker binding must expose an
 unresolved conflict instead of inventing an accepted current task.
 
 Accepted obligations have observable states `active`, `blocked`, `fulfilled`,
-`withdrawn` or `canceled`. Blocking records the reason and what would unblock it;
+`withdrawn`, `canceled` or `waived`. Blocking records the reason and what would unblock it;
 it does not erase responsibility. The accepting actor reports blocking or
 withdrawal under the stated policy; the authorized work owner may cancel.
 Terminal records are retained. Reassignment proposes a new obligation to another
 actor; it does not edit the original actor's promise. Withdrawal may violate a
 commitment's policy, but such a violation cannot be represented as silent consent
 to continue or as successful fulfillment.
+
+The [obligation profile](obligation-profile.md) selects who can issue an offer,
+accept, verify, fulfill, cancel or waive it; defines exact-head race outcomes;
+and separates a missed delivery deadline from termination. It is proposed for
+owner-review, not an implicit extension of the scoped-authority model. Eligibility
+after a control change and overdue timing are derived views; neither silently
+rewrites the original acceptance. A personal release never erases an unknown
+external effect.
 
 Acceptance supplies no permission to write, publish or take over another
 attempt. Permission also does not prove willingness. A binding may make an
@@ -267,15 +281,19 @@ may review and verify. Goal G1 is a standalone installation guide with criterion
 C1: usable without network access. Work W1 requires C's review and verification.
 All records below belong to this project; P1/P2 are proposal revisions, D1 is a
 decision, O1/O2 are offers, R1 is a result and V1 is verification.
+O1 requests an offline-ready candidate (criterion cp), with C as verifier and no
+deadline; it does not require that the first draft be the final output. Rp/Vp
+are the distinct preparation Result and verification. O2 requests application
+of the approved candidate and C's verification on the applied result.
 
 | Step | Action | Observable meaning |
 | --- | --- | --- |
-| 1 | A offers B preparation of P1 in O1; B acknowledges delivery | O1 has no acceptance yet |
+| 1 | A offers B preparation of an offline-ready candidate in O1; B acknowledges delivery | O1 has no acceptance yet |
 | 2 | B accepts O1, prepares P1 with an online dependency, and reports the preparation result | Acceptance and preparation are attributable; the draft has not been approved or published |
 | 3 | C objects to P1 on C1 | Required review blocks approval; preparation alone cannot prove O1 fulfilled |
 | 4 | B creates P2 with bundled prerequisites; C explicitly supports P2 | P1's objection remains historical; P2 has its own assessment |
 | 5 | A approves P2 as D1 against the current bases and assessment set | Exact publication grant, no application yet |
-| 6 | A closes O1 on the reviewed preparation evidence; A offers execution of P2 in O2; B accepts O2 and acquires a current attempt | Preparation fulfillment and willingness to execute are separate recorded acts; O2 and attempt authority are separately inspectable |
+| 6 | B reports Rp naming exact P2; C records Vp with a pass on O1/cp and evidence; A fulfills O1 on Rp/Vp, then offers O2; B accepts O2 and acquires a current attempt | Proposal support did not substitute for preparation verification; preparation closure, execution acceptance and attempt authority are separately inspectable |
 | 7 | P2 is applied, but its response is lost | Client knows neither no-effect nor completion |
 | 8 | Authorized replay/reconciliation yields the existing application evidence and R1 | One effect is established; no new publication is inferred from retry |
 | 9 | C records V1: pass on exact R1/C1 with offline-check evidence | Verifiable basis exists; B's session ending was not the proof |
@@ -305,8 +323,12 @@ code. These are specified cases, not passing tests or accepted assignments.
 | S13 | Brief omits a page of accepted obligations | Coverage says partial with a continuation; no empty-work inference |
 | S14 | Summary says owner approved, but only reporter provenance exists | Reported/pending approval; no grant unless delegated authority is established |
 
-Open specification work: finalized record/envelope schemas; obligation time and
-waiver authority details; cross-profile composition and version negotiation;
+The [obligation packet](../examples/obligation-review-traces.md) adds O01–O08,
+with explicit starting state and both orders of competing transitions. Its
+author predictions are separate so another reader can derive outcomes first.
+
+Open specification work: finalized record/envelope schemas; independent challenge
+of the proposed obligation policy; cross-profile composition and version negotiation;
 credential-recovery dependency policy; reference/cursor privacy; concrete outcome
 codes. They are review targets, not reasons to implement storage first. Model
 receipt saturation remains a documented limitation of the existing implementation

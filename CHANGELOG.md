@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Refine collaboration semantics to candidate 0.2 and add obligation-review-0.1:
+  offer/obligation transition heads, named owner closure authority, verification
+  matrix, strict acceptance cutoff, overdue delivery and explicit goal rebinding.
+- Preserve unresolved effects after personal withdrawal/waiver. Define competing
+  acceptance/revision, result/verification/fulfillment and goal-change outcomes.
+- Correct the preparation trace: proposal support is not result verification;
+  record a distinct preparation Result and verification before fulfillment.
+- Add an eight-case independent-reading packet and a separate author analysis.
+  No independent review or runtime test execution is claimed; models are unchanged.
+
 - Prioritize specification over implementation hardening. Add collaboration
   semantics candidate 0.1: goal/position/decision/result cycle, explicit offer
   acceptance, obligation lifecycle, verification, and handoff provenance.

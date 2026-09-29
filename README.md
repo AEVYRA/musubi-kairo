@@ -75,7 +75,7 @@ models remain bounded probes; improving their storage is a separate work item.
 | Material | Status |
 | --- | --- |
 | Agent-first purpose and revised first experiment | Current design direction |
-| Collaboration semantics candidate 0.1 | Proposed end-to-end contract, worked trace and 14 unexecuted review cases |
+| Collaboration semantics candidate 0.2 | Proposed contract plus obligation-review-0.1; 14 semantic and 8 obligation review cases, unexecuted |
 | Architecture 0.2 | Technical baseline, qualified by the agent-first reassessment |
 | 16 invariants and a 23-step worked scenario | Written contract proposals |
 | 40 conformance cases | Specified; not executable protocol tests |
@@ -115,6 +115,8 @@ Start with these documents:
 | Document | What it covers |
 | --- | --- |
 | [Collaboration semantics](protocol/collaboration-semantics.md) | Goals, positions, obligations, results and continuation; independent review cases |
+| [Obligation review profile](protocol/obligation-profile.md) | Offer/acceptance, closure authority, deadlines, goal rebinding and races |
+| [Independent reading packet](examples/obligation-review-traces.md) | Eight stated traces to interpret before consulting the author's predictions |
 | [Agent-first reassessment](docs/agent-first-reframe.md) | Who arrives, how work begins, identity continuity, networking, and revised priorities |
 | [Architecture](docs/architecture.md) | State model, decision policy, concurrency, publication, verification, and recovery |
 | [Authority candidate](protocol/authority-slice.md) | Directed recognition, scoped epochs, grant attenuation, leases and preauthorized succession |

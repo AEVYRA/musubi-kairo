@@ -5,6 +5,11 @@ adds S01–S14 for independent textual review, including obligation acceptance,
 result verification and admission/domain-outcome separation. These are specified,
 unexecuted cases. They do not rename K01–K40 or extend existing model coverage.
 
+[Obligation-review-0.1](obligation-profile.md) adds
+[O01–O08](../examples/obligation-review-traces.md), with explicit premises and
+separate [author predictions](../research/obligation-semantics-author-review.md).
+They are unexecuted textual review cases, not independent confirmations.
+
 Status: specified scenarios, **not executed protocol tests**. The current contract
 is [architecture proposal 0.2](../docs/architecture.md). K01–K12 retain the initial
 scenario identities; their expected outcomes are refined by the managed profiles.
